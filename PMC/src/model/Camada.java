@@ -36,6 +36,15 @@ public class Camada {
 		pesosIniciais = pesos;
 	}
 
+	public float[] getPesosCorrespondentes(int numPosicao, int numNeuronios){
+		float[] pesosCorrespondentes = new float[numNeuronios];
+		
+		for(int i = 0; i < numNeuronios; i++){
+			pesosCorrespondentes[i] = neuronios[i].getPesos()[numPosicao];
+		}
+		
+		return pesosCorrespondentes;
+	}
 	public Neuronio[] getNeuronios() {
 		return neuronios;
 	}

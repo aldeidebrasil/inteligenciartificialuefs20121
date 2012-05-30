@@ -14,20 +14,20 @@ public class Neuronio {
 
 	private float[][] entradas;
 	public float[] pesos;
+	private double entradaPonderada;
 	private double saida;
 	private float taxaDeAprendizado;
 	private boolean erroExiste;
 	private Random aleatorio;
-	private int numeroDeAcertos;
 	private double gradienteLocal;
 	
 	public int numEpocas = 0;	
 
 	public Neuronio() {
-		aleatorio = new Random();
-		numeroDeAcertos =0;
+		aleatorio = new Random();		
 		pesos = new float[4];
-
+		gradienteLocal = 0;
+		
 		for(int i =0; i <=3; i++){
 			pesos[i]=(float) 0.0;
 
@@ -79,6 +79,7 @@ public class Neuronio {
 			aux+= entrada[a] * pesos[a];
 		}
 		
+		this.entradaPonderada = aux;
 		return  aux;
 	}
 	
@@ -103,25 +104,6 @@ public class Neuronio {
 		return  aux;
 	}
 	
-
-	/**
-	 * Rertona a saida do neuronio apos a analise do valor ponderado. 
-	 * 
-	 * @param somaPonderada : soma ponderada dos valores de entrada
-	 * @return resposta : Resposta do neuronio
-	 */
-	public int funcaoDeAtivacaoBipolar(float somaPonderada) {
-		int resposta;
-
-		if (somaPonderada > 0) {
-			resposta = 1;
-		} else {
-			resposta = -1;
-		}
-
-		return resposta;
-	}
-
 	/**
 	 * Ajusta o valor do vetor de peso para a amostra atual, se o resultado encontrado for diferente da resposta desejada.
 	 * 
@@ -132,7 +114,7 @@ public class Neuronio {
 
 		if (saidaDaFuncao != entradas[amostra][4]) {
 
-			// w          w-1             n               d(k): saida esperada             y: saida          x(k): vetor de entrada   
+			// w          w-1             n            d(k): saida esperada        y: saida    x(k): vetor de entrada   
 			pesos[0] = pesos[0] + taxaDeAprendizado * (entradas[amostra][4] - saidaDaFuncao) * entradas[amostra][0];
 			pesos[1] = pesos[1] + taxaDeAprendizado * (entradas[amostra][4] - saidaDaFuncao) * entradas[amostra][1];
 			pesos[2] = pesos[2] + taxaDeAprendizado * (entradas[amostra][4] - saidaDaFuncao) * entradas[amostra][2];
@@ -144,7 +126,7 @@ public class Neuronio {
 	}
 
 	/**
-	 * Funcao de ativacavao Sigmoide
+	 * Funcao de ativação Sigmoide
 	 * 
 	 * @param x
 	 */
@@ -155,14 +137,14 @@ public class Neuronio {
 	
 	
 	/**
-	 * Calcula a derivada da Sigmoide
-	 *  
+	 * Calcula a derivada da Sigmoide no somatorio das entradas ponderadas 
+	 * A derivada é utilizada para o cálculo do gradiente local
 	 * @param somatorio
 	 * @return
 	 */
-	public double DerivadaSigmoide(double somatorio){
+	public double DerivadaSigmoide(){ 
 				
-		return (0.5 * somatorio * (1 - somatorio));
+		return (0.5 * entradaPonderada * (1 - entradaPonderada));
 				
 	}
 	
@@ -173,8 +155,8 @@ public class Neuronio {
 	 */
 	public void CalcularGradienteLocal(float saidaDesejada, int numAmostra){
 		 
-		//Equação de calculo da ultima camada
-		gradienteLocal = (saidaDesejada - saida) * DerivadaSigmoide(Somatorio(numAmostra));
+		//Equação de calculo da ultima camada (No caso do backpropagation a primeira)
+		gradienteLocal = (saidaDesejada - saida) * DerivadaSigmoide();
 		
 	}
 	
@@ -186,125 +168,10 @@ public class Neuronio {
 	public void CalcularGradienteLocal(int qtdNeuroniosCamadaAnt, Neuronio[] neuroniosCamadaAnt){
 		
 		for(int i = 0; i == qtdNeuroniosCamadaAnt; i++){
-			gradienteLocal += neuroniosCamadaAnt[i].getGradienteLocal() * neuroniosCamadaAnt[i].getPesos()[1];
+			gradienteLocal += neuroniosCamadaAnt[i].getGradienteLocal() * neuroniosCamadaAnt[i].getPesos()[i];
 		}
 		
-	}
-	
-	/**
-	 * Realiza o treinamento da rede. Realiza o somatorio ponderado de uma amostra 
-	 * e passa esse valor para a funï¿½ï¿½o de ativaï¿½ï¿½o, caso este valor seja diferente
-	 * da resposta desejada o vetor de pesos ï¿½ ajustado.
-	 */
-	public void treinamento() {
-
-
-		//setPesos(); // inicializa vetor de pesos com valores aleatorios
-		taxaDeAprendizado = (float) 0.01; // inicializa taxa de aprendizado
-
-
-		int epocaSemErros=0;
-		numEpocas=0;
-
-
-		while (epocaSemErros < 2) {
-
-			erroExiste = false;
-
-			//System.out.println("EPOCA: " + numEpocas);	
-
-			for (int i = 0; i < entradas.length; i++) {
-
-				// Soma Ponderada das Entradas
-				float somatorio = Somatorio(i);
-				//System.out.println("somatorio = " + somatorio);
-
-				// Resultado da soma ponderada passando pela funï¿½ï¿½o de ativaï¿½ï¿½o
-				int saidaFuncaoSinal = funcaoDeAtivacaoBipolar(somatorio);
-				//System.out.println("saida funcao = " + saidaFuncaoSinal + "  |  saida desejada= " + entradas[i][4]);
-
-				// Ajuste dos valores do vetor de pesos "w"
-				ajustaPesos(saidaFuncaoSinal, i);
-			}
-
-			numEpocas++;
-
-			if(!erroExiste)
-				epocaSemErros++;
-			else
-				epocaSemErros=0;
-
-		}
-	}
-
-	/**
-	 * Realiza o teste da rede.
-	 * 
-	 * @throws FileNotFoundException
-	 */
-	public void teste() throws FileNotFoundException {
-
-
-		for(int i=0; i <entradas.length; i++){
-			for(int j=0; j<entradas[0].length; j++ )
-				entradas[i][j]=0;
-		}
-
-		DataRequest("testePerceptron.txt");
-
-		System.out.print("Saida da rede: ");
-		for (int i = 0; i < 9; i++) { // quantidade de amostras de teste
-
-			// Soma Ponderada das Entradas
-			float somatorio = Somatorio(i);
-			//System.out.println("somatorio = " + somatorio);
-
-			// Resultado da soma ponderada passando pela funï¿½ï¿½o de ativaï¿½ï¿½o
-			int saidaFuncaoSinal = funcaoDeAtivacaoBipolar(somatorio);
-			System.out.print(saidaFuncaoSinal);
-
-
-		}
-		System.out.println("");
-
-	}
-
-	//System.out.println("Acertos: " + (numeroDeAcertos*100)/9 + "%");
-
-
-
-	/**
-	 * Faz a leitura do arquivo de dados no formato ".txt" e transporta dos dados para uma matriz de floats.
-	 * Deve ser passado como parametro a nome do arquivo de texto.
-	 * 
-	 * @param arquivo
-	 * @throws FileNotFoundException
-	 */
-	public void DataRequest(String arquivo) throws FileNotFoundException{
-
-		entradas = new float[30][5]; 	//0 -> X0;
-										//1 -> X1;
-										//2 -> X2;
-										//3 -> X3;
-										//4 -> saida desejada
-
-		//Leitura do arquivo para inserï¿½ï¿½o dos valores no vetor de entradas 'x'
-		File f = new File(arquivo);
-		Scanner scan = new Scanner(f);
-
-		int line = 0;
-		while(scan.hasNextLine()){
-
-			String linha = new String();
-			linha = scan.nextLine();
-			String[] vetx = linha.split(" ");           
-
-			for(int j = 0; j < 5; j++){
-				entradas[line][j] = Float.parseFloat(vetx[j]);                    
-			}
-			entradas[line][4] = Float.parseFloat(vetx[4]); //saida desejada ï¿½ a posiï¿½ï¿½o 4 da matriz de cada amostra
-			line++;
-		}
+		gradienteLocal *= DerivadaSigmoide(); 
 	}
 	
 	public void setEntradas(float[][] entradasTreino) {
@@ -324,6 +191,14 @@ public class Neuronio {
 	public void setSaida(double saida) {
 		this.saida = saida;
 	}
+	
+	public double getEntradaPonderada() {
+		return entradaPonderada;
+	}
+
+	public void setEntradaPonderada(double saidaPonderada) {
+		this.entradaPonderada = saidaPonderada;
+	}
 
 	public float[] getPesos() {
 		return pesos;
@@ -341,7 +216,136 @@ public class Neuronio {
 		this.gradienteLocal = gradienteLocal;
 	}
 	
+	/**
+	 * 
+	 * @param gradienteAnterior
+	 * @param pesosAnterior : Vetor dos pesos sinapticos correspondentes a neuronio atual
+	 * @param numNeuronios : Quantidade de neuronios da camada anterior
+	 */
+	public void setGradienteLocal(double[] gradienteAnterior, float[] pesosCorrespondentes, int numNeuronios){
+		double gradiente = 0;
+		for(int i = 0; i < numNeuronios; i++){
+			gradiente += gradienteAnterior[i] * pesosCorrespondentes[i]; 
+			gradiente*= DerivadaSigmoide();
+		}
+		this.gradienteLocal = gradiente;
+	}
 	
+//	/**
+//	 * Realiza o treinamento da rede. Realiza o somatorio ponderado de uma amostra 
+//	 * e passa esse valor para a funï¿½ï¿½o de ativaï¿½ï¿½o, caso este valor seja diferente
+//	 * da resposta desejada o vetor de pesos ï¿½ ajustado.
+//	 */
+//	public void treinamento() {
+//
+//
+//		//setPesos(); // inicializa vetor de pesos com valores aleatorios
+//		taxaDeAprendizado = (float) 0.01; // inicializa taxa de aprendizado
+//
+//
+//		int epocaSemErros=0;
+//		numEpocas=0;
+//
+//
+//		while (epocaSemErros < 2) {
+//
+//			erroExiste = false;
+//
+//			//System.out.println("EPOCA: " + numEpocas);	
+//
+//			for (int i = 0; i < entradas.length; i++) {
+//
+//				// Soma Ponderada das Entradas
+//				float somatorio = Somatorio(i);
+//				//System.out.println("somatorio = " + somatorio);
+//
+//				// Resultado da soma ponderada passando pela funï¿½ï¿½o de ativaï¿½ï¿½o
+//				//int saidaFuncaoSinal = funcaoDeAtivacaoBipolar(somatorio);
+//				//System.out.println("saida funcao = " + saidaFuncaoSinal + "  |  saida desejada= " + entradas[i][4]);
+//
+//				// Ajuste dos valores do vetor de pesos "w"
+//				//ajustaPesos(saidaFuncaoSinal, i);
+//			}
+//
+//			numEpocas++;
+//
+//			if(!erroExiste)
+//				epocaSemErros++;
+//			else
+//				epocaSemErros=0;
+//
+//		}
+//	}
+//
+//	/**
+//	 * Realiza o teste da rede.
+//	 * 
+//	 * @throws FileNotFoundException
+//	 */
+//	public void teste() throws FileNotFoundException {
+//
+//
+//		for(int i=0; i <entradas.length; i++){
+//			for(int j=0; j<entradas[0].length; j++ )
+//				entradas[i][j]=0;
+//		}
+//
+//		DataRequest("testePerceptron.txt");
+//
+//		System.out.print("Saida da rede: ");
+//		for (int i = 0; i < 9; i++) { // quantidade de amostras de teste
+//
+//			// Soma Ponderada das Entradas
+//			float somatorio = Somatorio(i);
+//			//System.out.println("somatorio = " + somatorio);
+//
+//			// Resultado da soma ponderada passando pela funï¿½ï¿½o de ativaï¿½ï¿½o
+//			//int saidaFuncaoSinal = funcaoDeAtivacaoBipolar(somatorio);
+//			//System.out.print(saidaFuncaoSinal);
+//
+//
+//		}
+//		System.out.println("");
+//
+//	}
+//
+//	//System.out.println("Acertos: " + (numeroDeAcertos*100)/9 + "%");
+//
+//
+//
+//	/**
+//	 * Faz a leitura do arquivo de dados no formato ".txt" e transporta dos dados para uma matriz de floats.
+//	 * Deve ser passado como parametro a nome do arquivo de texto.
+//	 * 
+//	 * @param arquivo
+//	 * @throws FileNotFoundException
+//	 */
+//	public void DataRequest(String arquivo) throws FileNotFoundException{
+//
+//		entradas = new float[30][5]; 	//0 -> X0;
+//										//1 -> X1;
+//										//2 -> X2;
+//										//3 -> X3;
+//										//4 -> saida desejada
+//
+//		//Leitura do arquivo para inserção dos valores no vetor de entradas 'x'
+//		File f = new File(arquivo);
+//		Scanner scan = new Scanner(f);
+//
+//		int line = 0;
+//		while(scan.hasNextLine()){
+//
+//			String linha = new String();
+//			linha = scan.nextLine();
+//			String[] vetx = linha.split(" ");           
+//
+//			for(int j = 0; j < 5; j++){
+//				entradas[line][j] = Float.parseFloat(vetx[j]);                    
+//			}
+//			entradas[line][4] = Float.parseFloat(vetx[4]); //saida desejada é a posicação 4 da matriz de cada amostra
+//			line++;
+//		}
+//	}
 	
 	
 }

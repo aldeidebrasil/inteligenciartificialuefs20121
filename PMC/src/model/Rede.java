@@ -74,12 +74,10 @@ public class Rede {
 								gradienteAnterior[a] = camadas[j+1].getNeuronios()[a].getGradienteLocal(); //valores do gradiente da camada anterior(j+1)
 							}
 							for(int a = 0; a < camadas[i].getNumeroDeNeuronios(); a++){ //calculo do gradiente local de cada neuronio da camada
-								for(int b = 0; b < camadas[j+1].getNumeroDeNeuronios();b++){ //calcula o gradiente local de um neuronio especifico
-									
+								for(int b = 0; b < camadas[j+1].getNumeroDeNeuronios(); b++){ //calcula o gradiente local de um neuronio especifico
+									camadas[a].getNeuronios()[b].setGradienteLocal(gradienteAnterior, camadas[a].getPesosCorrespondentes(b, camadas[j+1].getNumeroDeNeuronios()), camadas[j+1].getNumeroDeNeuronios());
 								}
-								
 							}
-							//camadas[j].getNeuronios()[k].CalculaGradienteLocal(camadas[j+1].getNumeroDeNeuronios(), camada[j+1].getNeuronios());
 							//camadas[j].getNeuronios()[k].ajustaPesos();
 						}
 											
