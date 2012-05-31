@@ -151,9 +151,9 @@ public class Neuronio {
 	/**
 	 * 
 	 * @param saidaDesejada
-	 * @param numAmostra
+	 * @param saidaNeuronio
 	 */
-	public void CalcularGradienteLocal(float saidaDesejada, int numAmostra){
+	public void CalcularGradienteLocal(float saidaDesejada){
 		 
 		//Equação de calculo da ultima camada (No caso do backpropagation a primeira)
 		gradienteLocal = (saidaDesejada - saida) * DerivadaSigmoide();
