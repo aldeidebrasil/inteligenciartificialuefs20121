@@ -81,8 +81,8 @@ public class Rede {
 					for(int k = numNeuronios - 1; k > 0; k--){
 					if(k == numNeuronios){
 							camadas[j].getNeuronios()[k].CalcularGradienteLocal(entradas[amostra][saida]);
-							
-							//camadas[j].getNeuronios()[k].ajustaPesos();
+							//Ajuste dos pesos: recebe a saida do neuronio correspondente da j-esima camada -1.
+							camadas[j].getNeuronios()[k].ajustaPesos(camadas[j-1].getNeuronios()[k].getSaida(), k, taxaAprendizagem);  
 							saida--;
 						} else{
 							double[] gradienteAnterior = new double[camadas[j+1].getNumeroDeNeuronios()];
