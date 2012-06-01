@@ -1,5 +1,8 @@
 package model;
 
+import java.io.*;
+import java.util.*;
+
 public class Rede {
 
 	private int numeroDeCamadas;
@@ -14,7 +17,7 @@ public class Rede {
 	private double EQM_Medio; // armazena a media dos EQMs.
 	private final int EPOCA;
 	private int numEpocas;
-	
+
 
 	public Rede(int numCamadas){
 
@@ -28,6 +31,51 @@ public class Rede {
 	}
 
 	/**
+	 * Faz a leitura do arquivo de dados no formato ".txt" e transporta dos dados para uma matriz de floats.
+	 * Deve ser passado como parametro a nome do arquivo de texto.
+	 * 
+	 * @param arquivo
+	 * @throws IOException 
+	 */
+	public void DataRequest(String arquivo) throws IOException{
+
+		//entradas = new float[][];     //0 -> X0;
+										//1 -> X1;
+										//2 -> X2;
+										//3 -> X3;
+										//4 -> X4;
+										//5 -> Y1;
+										//6 -> Y2;
+										//7 -> Y3;
+		
+		//Contar a quantidade de linhas do arquivo
+		File arquivoLeitura = new File(arquivo);  
+		LineNumberReader linhaLeitura = new LineNumberReader(new FileReader(arquivoLeitura));  
+		linhaLeitura.skip(arquivoLeitura.length());  
+		int qtdLinha = linhaLeitura.getLineNumber();
+		
+		//Leitura do arquivo para inserção dos valores no vetor de entradas 'x'
+		File f = new File(arquivo);
+		Scanner scan = new Scanner(f);
+
+		int line = 0;
+		while(scan.hasNextLine()){
+
+			String linha = new String();
+			linha = scan.nextLine();
+			String[] vetx = linha.split(" ");           
+			entradas = new float[qtdLinha][vetx.length];
+			
+			// Os dados de cada amostra são transferidos para a matriz de entradas
+			for(int j = 0; j < vetx.length; j++){
+				entradas[line][j] = Float.parseFloat(vetx[j]);                   
+			}
+			line++;
+		}
+	}
+	
+	/**
+	 * Realiza o treino da Rede
 	 * 
 	 */
 	public void treinar(){
@@ -64,10 +112,10 @@ public class Rede {
 							camadas[j].getNeuronios()[k].setSaida(camadas[j].getNeuronios()[k].Sigmoide(aux));
 						}
 					}
-				}//Aqui todos os neuronios de todas as camadas ja estam com os suas saidas calculadas
-				//fase forwarding completa
-				
-				
+				}/*Aqui todos os neuronios de todas as camadas ja estam com os suas saidas calculadas
+				fase forwarding completa*/
+
+
 				/*Armazenas as saidas de uma amostra numa posiçao do vetror historicoDeSaidas.
 				  Esse vetor sera usado para calcular o EQM da amostra. */
 				for(int a=0; a<camadas[numeroDeCamadas].getNumeroDeNeuronios(); a++){
@@ -79,7 +127,7 @@ public class Rede {
 					int numNeuronios = camadas[j].getNumeroDeNeuronios();
 					int saida =7;
 					for(int k = numNeuronios - 1; k > 0; k--){
-					if(k == numNeuronios){
+						if(k == numNeuronios){
 							camadas[j].getNeuronios()[k].CalcularGradienteLocal(entradas[amostra][saida]);
 							//Ajuste dos pesos: recebe a saida do neuronio correspondente da j-esima camada -1.
 							camadas[j].getNeuronios()[k].ajustaPesos(camadas[j-1].getNeuronios()[k].getSaida(), k, taxaAprendizagem);  
@@ -141,15 +189,15 @@ public class Rede {
 	 * 
 	 */
 	public void calculaEQMmedio(){
-		
+
 		double aux=0;
 
 		for(int i = 0; i < EQMs.length; i++ ){
-			
-			 aux += EQMs[i];
-		
+
+			aux += EQMs[i];
+
 		}
-		
+
 		EQM_Medio = aux/entradas.length;
 	}
 
