@@ -107,22 +107,12 @@ public class Neuronio {
 	/**
 	 * Ajusta o valor do vetor de peso para a amostra atual, se o resultado encontrado for diferente da resposta desejada.
 	 * 
-	 * @param saidaDaFuncao : saida/resposta da fun��o bipoloar
-	 * @param amostra : numero da amostra que est� sendo testada (amostra atual) 
+	 * @param saidaDoNeuronioAnterior : saida/resposta da funcao sigmoide
+	 * @param amostra : numero da amostra que esta sendo testada (amostra atual) 
 	 */
-	public void ajustaPesos(float saidaDaFuncao, int amostra) {
-
-		if (saidaDaFuncao != entradas[amostra][4]) {
-
-			// w          w-1             n            d(k): saida esperada        y: saida    x(k): vetor de entrada   
-			pesos[0] = pesos[0] + taxaDeAprendizado * (entradas[amostra][4] - saidaDaFuncao) * entradas[amostra][0];
-			pesos[1] = pesos[1] + taxaDeAprendizado * (entradas[amostra][4] - saidaDaFuncao) * entradas[amostra][1];
-			pesos[2] = pesos[2] + taxaDeAprendizado * (entradas[amostra][4] - saidaDaFuncao) * entradas[amostra][2];
-			pesos[3] = pesos[3] + taxaDeAprendizado * (entradas[amostra][4] - saidaDaFuncao) * entradas[amostra][3];
-
-			erroExiste=true;
-
-		}
+	public void ajustaPesos(double saidaDoNeuronioAnterior, int posicaoSinapse, double taxaDeAprendizagem) {
+			
+		pesos[posicaoSinapse]+= taxaDeAprendizagem*gradienteLocal*saidaDoNeuronioAnterior; 
 	}
 
 	/**
