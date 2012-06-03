@@ -40,20 +40,20 @@ public class Rede {
 	public void DataRequest(String arquivo) throws IOException{
 
 		//entradas = new float[][];     //0 -> X0;
-										//1 -> X1;
-										//2 -> X2;
-										//3 -> X3;
-										//4 -> X4;
-										//5 -> Y1;
-										//6 -> Y2;
-										//7 -> Y3;
-		
+		//1 -> X1;
+		//2 -> X2;
+		//3 -> X3;
+		//4 -> X4;
+		//5 -> Y1;
+		//6 -> Y2;
+		//7 -> Y3;
+
 		//Contar a quantidade de linhas do arquivo
 		File arquivoLeitura = new File(arquivo);  
 		LineNumberReader linhaLeitura = new LineNumberReader(new FileReader(arquivoLeitura));  
 		linhaLeitura.skip(arquivoLeitura.length());  
 		int qtdLinha = linhaLeitura.getLineNumber();
-		
+
 		//Leitura do arquivo para inserção dos valores no vetor de entradas 'x'
 		File f = new File(arquivo);
 		Scanner scan = new Scanner(f);
@@ -65,7 +65,7 @@ public class Rede {
 			linha = scan.nextLine();
 			String[] vetx = linha.split(" ");           
 			entradas = new float[qtdLinha][vetx.length];
-			
+
 			// Os dados de cada amostra são transferidos para a matriz de entradas
 			for(int j = 0; j < vetx.length; j++){
 				entradas[line][j] = Float.parseFloat(vetx[j]);                   
@@ -73,7 +73,7 @@ public class Rede {
 			line++;
 		}
 	}
-	
+
 	/**
 	 * Realiza o treino da Rede
 	 * 
@@ -92,24 +92,24 @@ public class Rede {
 
 				//ajustar saida de cada neuronio de cada camada
 				//inicio da fase forwarding
-				for(int j = 0; j < camadas.length; j++){
-					for(int k = 0; k < camadas[amostra].getNumeroDeNeuronios(); k++){
+				for(int camada = 0; camada < camadas.length; camada++){
+					for(int neuronio = 0; neuronio < camadas[amostra].getNumeroDeNeuronios(); neuronio++){
 
-						if(j==0){ // Camada de entrada. Deve ler os dados da matriz de entradas.
+						if(camada==0){ // Camada de entrada. Deve ler os dados da matriz de entradas.
 
-							float aux = camadas[j].getNeuronios()[k].SomatorioDaCamadaDeEntrada(amostra, entradas);
-							camadas[j].getNeuronios()[k].setSaida(camadas[j].getNeuronios()[k].Sigmoide(aux));
+							float aux = camadas[camada].getNeuronios()[neuronio].SomatorioDaCamadaDeEntrada(amostra, entradas);
+							camadas[camada].getNeuronios()[neuronio].setSaida(camadas[camada].getNeuronios()[neuronio].Sigmoide(aux));
 
 						} else{ // Camada escondida. Deve ler a saída dos neuronios da camada anterior.
 
-							float [] saidaAnterior = new float[camadas[j-1].getNumeroDeNeuronios()];
+							float [] saidaAnterior = new float[camadas[camada-1].getNumeroDeNeuronios()];
 
-							for(int a = 0; a < saidaAnterior.length; a++){ // Monta vetor com as saidas da camada anterior
-								saidaAnterior[a] = (float) camadas[j-1].getNeuronios()[a].getSaida();
+							for(int a = 0; a < saidaAnterior.length; a++){ // Monta vetor com as saidas dos neuronios da camada anterior
+								saidaAnterior[a] = (float) camadas[camada-1].getNeuronios()[a].getSaida();
 							}
 
-							float aux = camadas[j].getNeuronios()[k].SomatorioDeCamadaEscondida(saidaAnterior);
-							camadas[j].getNeuronios()[k].setSaida(camadas[j].getNeuronios()[k].Sigmoide(aux));
+							float aux = camadas[camada].getNeuronios()[neuronio].SomatorioDeCamadaEscondida(saidaAnterior);
+							camadas[camada].getNeuronios()[neuronio].setSaida(camadas[camada].getNeuronios()[neuronio].Sigmoide(aux));
 						}
 					}
 				}/*Aqui todos os neuronios de todas as camadas ja estam com os suas saidas calculadas
@@ -122,27 +122,35 @@ public class Rede {
 					historicoDeSaidas[amostra][a] = (float) camadas[numeroDeCamadas].getNeuronios()[a].getSaida();
 				}
 
-				//inicio da fase de backward (determinar gradientes locais da ultima para a primeira camada)	
+				//inicio da fase de backward (determinar gradientes locais: da ultima para a primeira camada)	
 				for(int j = camadas.length; j > 0; j--){ //"camadas.length" = quantidade de camadas
 					int numNeuronios = camadas[j].getNumeroDeNeuronios();
 					int saida =7;
 					for(int k = numNeuronios - 1; k > 0; k--){
-						if(k == numNeuronios){
+						if(k == numNeuronios){ // camada de saida
+							// Calcular gradiente local do k-esimo neuronio da camada j
 							camadas[j].getNeuronios()[k].CalcularGradienteLocal(entradas[amostra][saida]);
 							//Ajuste dos pesos: recebe a saida do neuronio correspondente da j-esima camada -1.
 							camadas[j].getNeuronios()[k].ajustaPesos(camadas[j-1].getNeuronios()[k].getSaida(), k, taxaAprendizagem);  
 							saida--;
-						} else{
+						} else{ // camadas mais internas
 							double[] gradienteAnterior = new double[camadas[j+1].getNumeroDeNeuronios()];
 							for(int a = 0; a < gradienteAnterior.length; a++){
 								gradienteAnterior[a] = camadas[j+1].getNeuronios()[a].getGradienteLocal(); //valores do gradiente da camada anterior(j+1)
 							}
-							for(int a = 0; a < camadas[amostra].getNumeroDeNeuronios(); a++){ //calculo do gradiente local de cada neuronio da camada
+							for(int a = 0; a < camadas[j].getNumeroDeNeuronios(); a++){ //calculo do gradiente local de cada neuronio da camada
 								for(int b = 0; b < camadas[j+1].getNumeroDeNeuronios(); b++){ //calcula o gradiente local de um neuronio especifico
 									camadas[a].getNeuronios()[b].setGradienteLocal(gradienteAnterior, camadas[a].getPesosCorrespondentes(b, camadas[j+1].getNumeroDeNeuronios()), camadas[j+1].getNumeroDeNeuronios());
 								}
 							}
-							//camadas[j].getNeuronios()[k].ajustaPesos();
+
+							// Depois de calcular o gradiente local de uma camada, deve-se ajustar a matriz de pesos da camada
+							if(j!=0){ // camadas escondidas: usam a saida de um neuronio da camada anterior
+								camadas[j].getNeuronios()[k].ajustaPesos(camadas[j-1].getNeuronios()[k].getSaida(), k, taxaAprendizagem);
+							}else{ // camada de entrada: usa a matriz de dados de treinamento
+								camadas[j].getNeuronios()[k].ajustaPesos(entradas[amostra][k], k, taxaAprendizagem); 
+							}
+
 						}
 
 					}
