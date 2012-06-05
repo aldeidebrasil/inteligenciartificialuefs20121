@@ -19,15 +19,31 @@ public class Rede {
 	private int numEpocas;
 
 
-	public Rede(int numCamadas){
+	public Rede(int numCamadas, int [] qtdNeuroniosPorCamada, int [] qtdEntradas){
 
+		try {
+			DataRequest("treina.txt");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 		this.numeroDeCamadas = numCamadas;
 		this.camadas = new Camada[numCamadas];
-		EQMs = new double[camadas[numeroDeCamadas].getNumeroDeNeuronios()];
+		
+		
+		
+		for(int i=0; i < qtdNeuroniosPorCamada.length; i++){
+			this.camadas[i] = new Camada(qtdEntradas[i], qtdNeuroniosPorCamada[i]);
+			this.camadas[i].setNumeroDeNeuronios(qtdNeuroniosPorCamada[i]);
+			}
+		
+		EQMs = new double[camadas[numeroDeCamadas-1].getNumeroDeNeuronios()];
 		historicoDeSaidas = new float [entradas.length][camadas[numeroDeCamadas].getNumeroDeNeuronios()];
 		EPOCA = entradas.length;
 		numEpocas=0;
-
+		
+		
+		
 	}
 
 	/**
@@ -208,5 +224,5 @@ public class Rede {
 
 		EQM_Medio = aux/entradas.length;
 	}
-
+	
 }
