@@ -3,6 +3,12 @@ package model;
 import java.io.*;
 import java.util.*;
 
+/**
+ * 
+ * @author Douglas e André
+ *
+ */
+
 public class Rede {
 
 	private int numeroDeCamadas;
@@ -30,20 +36,16 @@ public class Rede {
 		this.numeroDeCamadas = numCamadas;
 		this.camadas = new Camada[numCamadas];
 		
-		
-		
 		for(int i=0; i < qtdNeuroniosPorCamada.length; i++){
 			this.camadas[i] = new Camada(qtdEntradas[i], qtdNeuroniosPorCamada[i]);
 			this.camadas[i].setNumeroDeNeuronios(qtdNeuroniosPorCamada[i]);
 			}
 		
 		EQMs = new double[camadas[numeroDeCamadas-1].getNumeroDeNeuronios()];
-		historicoDeSaidas = new float [entradas.length][camadas[numeroDeCamadas].getNumeroDeNeuronios()];
+		historicoDeSaidas = new float [entradas.length-1][camadas[numeroDeCamadas-1].getNumeroDeNeuronios()];
 		EPOCA = entradas.length;
 		numEpocas=0;
-		
-		
-		
+			
 	}
 
 	/**
@@ -68,7 +70,7 @@ public class Rede {
 		File arquivoLeitura = new File(arquivo);  
 		LineNumberReader linhaLeitura = new LineNumberReader(new FileReader(arquivoLeitura));  
 		linhaLeitura.skip(arquivoLeitura.length());  
-		int qtdLinha = linhaLeitura.getLineNumber();
+		int qtdLinha = linhaLeitura.getLineNumber()+1;
 
 		//Leitura do arquivo para inserção dos valores no vetor de entradas 'x'
 		File f = new File(arquivo);
@@ -99,7 +101,7 @@ public class Rede {
 		setPesosCamadas();
 		taxaAprendizagem = 0.1;
 		erro = 10E-6;
-		eqm_anterior = 1000000000;
+		eqm_anterior = 10E9;
 		eqm_atual = 0;
 
 		while(Math.abs(eqm_atual - eqm_anterior) > erro){
@@ -224,5 +226,15 @@ public class Rede {
 
 		EQM_Medio = aux/entradas.length;
 	}
+
+	public int getNumEpocas() {
+		return numEpocas;
+	}
+
+	public void setNumEpocas(int numEpocas) {
+		this.numEpocas = numEpocas;
+	}
+	
+	
 	
 }

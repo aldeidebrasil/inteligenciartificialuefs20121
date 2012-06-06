@@ -22,7 +22,7 @@ public class Neuronio {
 
 	public Neuronio() {
 		aleatorio = new Random();		
-		pesos = new float[4];
+		pesos = new float[5]; //verificar como generalizar
 		gradienteLocal = 0;
 		
 		for(int i =0; i <=3; i++){
@@ -43,22 +43,6 @@ public class Neuronio {
 		this.pesos[2] = (float) aleatorio.nextFloat();
 		this.pesos[3] = (float) aleatorio.nextFloat();
 
-	}
-
-	/**
-	 * Realiza a soma ponderada das entradas do neuronio. Tem como entrada o 
-	 * numero da amostra atual e devolve o valor a ser enviado para a funçao de ativaçao. 
-	 * 
-	 * @param i : numero da amostra atual
-	 * @return somatorio : somatorio ponderado das entradas do neuronio
-	 */
-	public float Somatorio(int i) {
-		
-		return  entradas[i][0] * pesos[0] + // x0*w0
-				entradas[i][1] * pesos[1] + // x1*w1
-				entradas[i][2] * pesos[2] + // x2*w2
-				entradas[i][3] * pesos[3] + // x3*w3
-				entradas[i][4] * pesos[4];  // x4*w4
 	}
 
 	/**
@@ -218,52 +202,6 @@ public class Neuronio {
 		this.gradienteLocal = gradiente;
 	}
 	
-//	/**
-//	 * Realiza o treinamento da rede. Realiza o somatorio ponderado de uma amostra 
-//	 * e passa esse valor para a funï¿½ï¿½o de ativaï¿½ï¿½o, caso este valor seja diferente
-//	 * da resposta desejada o vetor de pesos ï¿½ ajustado.
-//	 */
-//	public void treinamento() {
-//
-//
-//		//setPesos(); // inicializa vetor de pesos com valores aleatorios
-//		taxaDeAprendizado = (float) 0.01; // inicializa taxa de aprendizado
-//
-//
-//		int epocaSemErros=0;
-//		numEpocas=0;
-//
-//
-//		while (epocaSemErros < 2) {
-//
-//			erroExiste = false;
-//
-//			//System.out.println("EPOCA: " + numEpocas);	
-//
-//			for (int i = 0; i < entradas.length; i++) {
-//
-//				// Soma Ponderada das Entradas
-//				float somatorio = Somatorio(i);
-//				//System.out.println("somatorio = " + somatorio);
-//
-//				// Resultado da soma ponderada passando pela funï¿½ï¿½o de ativaï¿½ï¿½o
-//				//int saidaFuncaoSinal = funcaoDeAtivacaoBipolar(somatorio);
-//				//System.out.println("saida funcao = " + saidaFuncaoSinal + "  |  saida desejada= " + entradas[i][4]);
-//
-//				// Ajuste dos valores do vetor de pesos "w"
-//				//ajustaPesos(saidaFuncaoSinal, i);
-//			}
-//
-//			numEpocas++;
-//
-//			if(!erroExiste)
-//				epocaSemErros++;
-//			else
-//				epocaSemErros=0;
-//
-//		}
-//	}
-//
 //	/**
 //	 * Realiza o teste da rede.
 //	 * 

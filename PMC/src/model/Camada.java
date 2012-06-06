@@ -12,11 +12,16 @@ public class Camada {
 	private float[][] pesosIniciais;
 	
 	
-	public Camada(int entradas, int neuronios){
+	public Camada(int entradas, int numNeuronios){
 		
-		this.numeroDeEntradas = entradas;
-		this.numeroDeNeuronios = neuronios;
+		numeroDeEntradas = entradas;
+		numeroDeNeuronios = numNeuronios;
 		this.neuronios = new Neuronio[numeroDeNeuronios];
+		
+		for(int i = 0; i < numeroDeNeuronios; i++){
+			this.neuronios[i] = new Neuronio();
+		}
+		
 		this.pesos = new float[numeroDeNeuronios][numeroDeEntradas];
 					
 	}
