@@ -162,16 +162,21 @@ public class Rede {
 
 				//inicio da fase de backward (determinar gradientes locais: da ultima para a primeira camada)	
 				for(int j = camadas.length; j > 0; j--){ //"camadas.length" = quantidade de camadas
+					
 					int numNeuronios = camadas[j].getNumeroDeNeuronios();
 					int saida =7;
+					
 					for(int k = numNeuronios - 1; k > 0; k--){
+						
 						if(k == numNeuronios){ // camada de saida
 							// Calcular gradiente local do k-esimo neuronio da camada j
 							camadas[j].getNeuronios()[k].CalcularGradienteLocal(entradas[amostra][saida]);
 							//Ajuste dos pesos: recebe a saida do neuronio correspondente da j-esima camada -1.
 							camadas[j].getNeuronios()[k].ajustaPesos(camadas[j-1].getNeuronios()[k].getSaida(), k, taxaAprendizagem);  
 							saida--;
+							
 						} else{ // camadas mais internas
+							
 							double[] gradienteAnterior = new double[camadas[j+1].getNumeroDeNeuronios()];
 							for(int a = 0; a < gradienteAnterior.length; a++){
 								gradienteAnterior[a] = camadas[j+1].getNeuronios()[a].getGradienteLocal(); //valores do gradiente da camada anterior(j+1)
@@ -254,7 +259,5 @@ public class Rede {
 	public void setNumEpocas(int numEpocas) {
 		this.numEpocas = numEpocas;
 	}
-
-
 
 }

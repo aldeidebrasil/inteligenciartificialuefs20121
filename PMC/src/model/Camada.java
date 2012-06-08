@@ -19,7 +19,7 @@ public class Camada {
 		this.neuronios = new Neuronio[numeroDeNeuronios];
 		
 		for(int i = 0; i < numeroDeNeuronios; i++){
-			this.neuronios[i] = new Neuronio();
+			this.neuronios[i] = new Neuronio(numeroDeNeuronios);
 		}
 		
 		this.pesos = new float[numeroDeNeuronios][numeroDeEntradas];
@@ -38,7 +38,7 @@ public class Camada {
 				pesos[a][b] = aleatorio.nextFloat();
 		}
 		
-		pesosIniciais = pesos;
+		setPesosIniciais(pesos);
 	}
 
 	public float[] getPesosCorrespondentes(int numPosicao, int numNeuronios){
@@ -68,6 +68,14 @@ public class Camada {
 	
 	public float [][] getPesos(){
 		return pesos;
+	}
+
+	public float[][] getPesosIniciais() {
+		return pesosIniciais;
+	}
+
+	public void setPesosIniciais(float[][] pesosIniciais) {
+		this.pesosIniciais = pesosIniciais;
 	}
 
 }
