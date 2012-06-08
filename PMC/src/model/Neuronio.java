@@ -52,12 +52,12 @@ public class Neuronio {
 	 * @param entrada : vetor das saidas da camada antetior
 	 * @return somatorio : somatorio ponderado das entradas do neuronio
 	 */
-	public float SomatorioDeCamadaEscondida(float [] entrada) {
+	public float SomatorioDeCamadaEscondida(float [] entrada, int num_neuronio, float [][] pesos) {
 
 		float aux = 0;
 		
-		for(int a = 0; a < entrada.length;a++){
-			aux+= entrada[a] * pesos[a];
+		for(int a = 0; a < entrada.length-3;a++){ // A subtração de 3 é porque as três ultimas posições são as saídas desejadas
+ 			aux+= entrada[a] * pesos[num_neuronio][a];
 		}
 		
 		this.entradaPonderada = aux;
@@ -69,17 +69,23 @@ public class Neuronio {
 	 * numero da amostra atual e a matriz de dados. Devolve o valor a ser enviado para a funçao de 
 	 * ativaçao. 
 	 * 
-	 * @param i : numero da amostra atual
+	 * @param num_amostra : numero da amostra atual
 	 * @param entradas : matriz de dados montada a partir do arquivo de teste.
-	 * @return somatorio : somatorio ponderado das entradas do neuronio
+	 * @param num_neuronio : numero do neuronio que se deseja calcular o somatorio das entradas
+	 * @param pesos : matriz de pesos da camada onde o neuronio está.
+	 * @return somatorio : somatorio ponderado das entradas do neuronio.
 	 */
-	public float SomatorioDaCamadaDeEntrada(int i, float[][]entradas) {
+	public float SomatorioDaCamadaDeEntrada(int num_amostra, float[][]entradas, int num_neuronio, float [][] pesos) {
 
-		this.entradas = entradas;
+		// this.entradas = entradas; Nao precisa!  Vamos usar apenas os valores da camada que é passado como argumento
 		float aux = 0;
 		
-		for(int a = 0; a < entradas[0].length;a++){
-			aux+= entradas[i][a] * pesos[a];
+		for(int a = 0; a < entradas[0].length-3;a++){ // A subtração de 3 é porque as três ultimas posições são as saídas desejadas
+			aux+= entradas[num_amostra][a] * pesos[num_neuronio][a];
+			
+			/*System.out.println("entrada " + entradas[num_amostra][a] + " * peso" + pesos[num_neuronio][a]);
+			System.out.println("somatorio:" + aux);*/
+			
 		}
 		
 		return  aux;

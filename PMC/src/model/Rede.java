@@ -17,7 +17,7 @@ public class Rede {
 	private double erro;
 	private double eqm_atual;
 	private double eqm_anterior;
-	private float[][] entradas;
+	private float[][] entradas = new float[130][8];
 	private float[][] historicoDeSaidas; // armazena as saidas de cada epoca de treinamento para o calculo do EQM.
 	private double [] EQMs; // armazena os EQMs individuais e a media dos mesmos.
 	private double EQM_Medio; // armazena a media dos EQMs.
@@ -32,20 +32,20 @@ public class Rede {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		this.numeroDeCamadas = numCamadas;
 		this.camadas = new Camada[numCamadas];
-		
+
 		for(int i=0; i < qtdNeuroniosPorCamada.length; i++){
 			this.camadas[i] = new Camada(qtdEntradas[i], qtdNeuroniosPorCamada[i]);
 			this.camadas[i].setNumeroDeNeuronios(qtdNeuroniosPorCamada[i]);
-			}
-		
+		}
+
 		EQMs = new double[camadas[numeroDeCamadas-1].getNumeroDeNeuronios()];
 		historicoDeSaidas = new float [entradas.length-1][camadas[numeroDeCamadas-1].getNumeroDeNeuronios()];
 		EPOCA = entradas.length;
 		numEpocas=0;
-			
+
 	}
 
 	/**
@@ -72,6 +72,7 @@ public class Rede {
 		linhaLeitura.skip(arquivoLeitura.length());  
 		int qtdLinha = linhaLeitura.getLineNumber()+1;
 
+
 		//Leitura do arquivo para inserção dos valores no vetor de entradas 'x'
 		File f = new File(arquivo);
 		Scanner scan = new Scanner(f);
@@ -82,12 +83,12 @@ public class Rede {
 			String linha = new String();
 			linha = scan.nextLine();
 			String[] vetx = linha.split(" ");           
-			entradas = new float[qtdLinha][vetx.length];
+			//entradas = new float[qtdLinha][vetx.length]; // ERRADO: A CADA ITERARAÇAO UMA NOVA INSTANCIA DE 'entradas' É CRIADA E OS VALORES ANTIGOS SAO PERDIDOS //
 
 			// Os dados de cada amostra são transferidos para a matriz de entradas
-			for(int j = 0; j < vetx.length; j++){
-				entradas[line][j] = Float.parseFloat(vetx[j]);                   
-			}
+			for(int j = 0; j < vetx.length; j++)
+				entradas[line][j] = Float.parseFloat(vetx[j]);
+
 			line++;
 		}
 	}
@@ -110,24 +111,43 @@ public class Rede {
 
 				//ajustar saida de cada neuronio de cada camada
 				//inicio da fase forwarding
+				
 				for(int camada = 0; camada < camadas.length; camada++){
-					for(int neuronio = 0; neuronio < camadas[amostra].getNumeroDeNeuronios(); neuronio++){
+					float saidaAnterior[] = null;
+					for(int neuronio = 0; neuronio < camadas[camada].getNumeroDeNeuronios(); neuronio++){ // este tava rodando com "amostra", porem deve roda com "camada"
 
 						if(camada==0){ // Camada de entrada. Deve ler os dados da matriz de entradas.
 
-							float aux = camadas[camada].getNeuronios()[neuronio].SomatorioDaCamadaDeEntrada(amostra, entradas);
+							float aux = camadas[camada].getNeuronios()[neuronio].SomatorioDaCamadaDeEntrada(amostra, entradas, neuronio, camadas[camada].getPesos());
 							camadas[camada].getNeuronios()[neuronio].setSaida(camadas[camada].getNeuronios()[neuronio].Sigmoide(aux));
+
+							System.out.println("Camada:" + camada);
+							System.out.println(" \t Numero de neuronios da camada: " + camadas[camada].getNumeroDeNeuronios());
+							System.out.println(" \t Neuronio atual: " + neuronio);
+							System.out.println(" \t Somatorio ponderado das entradas do neurorio " + neuronio + ": " + aux);
+							System.out.println(" \t Saida do neuronio " + neuronio + ": " + camadas[camada].getNeuronios()[neuronio].getSaida());
+
+
 
 						} else{ // Camada escondida. Deve ler a saída dos neuronios da camada anterior.
 
-							float [] saidaAnterior = new float[camadas[camada-1].getNumeroDeNeuronios()];
+							System.out.println("Camada:" + camada);
+							System.out.println(" \t Numero de neuronios da camada: " + camadas[camada].getNumeroDeNeuronios());
+							System.out.println(" \t Neuronio atual: " + neuronio);
 
-							for(int a = 0; a < saidaAnterior.length; a++){ // Monta vetor com as saidas dos neuronios da camada anterior
-								saidaAnterior[a] = (float) camadas[camada-1].getNeuronios()[a].getSaida();
+							if (neuronio==0){ // Apenas uma vez (na primeira passada) instacia o vetor e pega os valores dos neuronios da camada anterior
+								saidaAnterior = new float[camadas[camada-1].getNumeroDeNeuronios()]; 
+								for(int a = 0; a < saidaAnterior.length; a++){ // Monta vetor com as saidas dos neuronios da camada anterior
+									saidaAnterior[a] = (float) camadas[camada-1].getNeuronios()[a].getSaida();
+								}
 							}
 
-							float aux = camadas[camada].getNeuronios()[neuronio].SomatorioDeCamadaEscondida(saidaAnterior);
+							float aux = camadas[camada].getNeuronios()[neuronio].SomatorioDeCamadaEscondida(saidaAnterior, neuronio, camadas[camada].getPesos());
 							camadas[camada].getNeuronios()[neuronio].setSaida(camadas[camada].getNeuronios()[neuronio].Sigmoide(aux));
+
+
+							System.out.println(" \t Somatorio ponderado das entradas do neurorio " + neuronio + ": " + aux);
+							System.out.println(" \t Saida do neuronio " + neuronio + ": " + camadas[camada].getNeuronios()[neuronio].getSaida());
 						}
 					}
 				}/*Aqui todos os neuronios de todas as camadas ja estam com os suas saidas calculadas
@@ -234,7 +254,7 @@ public class Rede {
 	public void setNumEpocas(int numEpocas) {
 		this.numEpocas = numEpocas;
 	}
-	
-	
-	
+
+
+
 }
