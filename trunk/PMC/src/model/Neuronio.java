@@ -9,39 +9,23 @@ import java.util.Random;
  */
 public class Neuronio {
 
-	private float[][] entradas;
+	
 	public float[] pesos;
 	private double entradaPonderada;
 	private double saida;
-	private float taxaDeAprendizado;
-	private boolean erroExiste;
-	private Random aleatorio;
 	private double gradienteLocal;
 	
 	public int numEpocas = 0;	
 
-	public Neuronio() {
-		aleatorio = new Random();		
-		pesos = new float[5]; //verificar como generalizar
+	public Neuronio(int qtdPesos) {
+				
+		pesos = new float[qtdPesos];
 		gradienteLocal = 0;
 		
-		for(int i =0; i <=3; i++){
-			pesos[i]=(float) 0.0;
+		for(int i =0; i < qtdPesos; i++){
+			pesos[i]= 0;
 
 		}
-
-	}
-
-	/**
-	 * Atribui valores aleat�rios ao vetor de pesos da rede.
-	 * A aleatoriedade entre 0 e 1 � garantida com o uso do java.util.Random 
-	 * 
-	 */
-	public void setaPesosAleatorios() {
-		this.pesos[0] = (float) aleatorio.nextFloat();
-		this.pesos[1] = (float) aleatorio.nextFloat();
-		this.pesos[2] = (float) aleatorio.nextFloat();
-		this.pesos[3] = (float) aleatorio.nextFloat();
 
 	}
 
@@ -149,16 +133,6 @@ public class Neuronio {
 		}
 		
 		gradienteLocal *= DerivadaSigmoide(); 
-	}
-	
-	public void setEntradas(float[][] entradasTreino) {
-
-		this.entradas = entradasTreino;
-
-	}
-	
-	public void setTaxaDeAprendizado(float taxa) {
-		this.taxaDeAprendizado = taxa;
 	}
 
 	public double getSaida() {
