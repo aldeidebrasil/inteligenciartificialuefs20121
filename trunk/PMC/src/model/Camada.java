@@ -65,5 +65,9 @@ public class Camada {
 	public void setNumeroDeNeuronios(int numeroDeNeuronios) {
 		this.numeroDeNeuronios = numeroDeNeuronios;
 	}
+	
+	public float [][] getPesos(){
+		return pesos;
+	}
 
 }
