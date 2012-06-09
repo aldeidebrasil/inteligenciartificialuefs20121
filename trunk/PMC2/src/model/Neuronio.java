@@ -139,17 +139,35 @@ public class Neuronio {
 	}
 	
 	/**
+	 * Calcula o gradiente local de um neuronio situado na camada de saída
 	 * 
 	 * @param qtdNeuroniosCamadaAnt
 	 * @param neuroniosCamadaAnt
 	 */
-	public void CalcularGradienteLocal(int qtdNeuroniosCamadaAnt, Neuronio[] neuroniosCamadaAnt){
+	public void calcularGradienteLocal(int qtdNeuroniosCamadaAnt, Neuronio[] neuroniosCamadaAnt){
 		
 		for(int i = 0; i == qtdNeuroniosCamadaAnt; i++){
 			gradienteLocal += neuroniosCamadaAnt[i].getGradienteLocal() * neuroniosCamadaAnt[i].getPesos()[i];
 		}
 		
 		gradienteLocal *= DerivadaSigmoide(); 
+	}
+	
+	/**
+	 * Calcula o gradiente local de um neuronio situado nas camadas intermediária ou de entrada.
+	 * 
+	 * @param gradienteCamadaAtualMaisUm : gradiente local dos neuronios da "camada atual + 1"
+	 * @param pesosCamadaAtualMaisUm : matriz de pesos da "camada atual + 1" 
+	 * @param posicao_neuronio : posição do neuronio ao qual se deseja calcular o gradiente local.
+	 */
+	public void calcularGradienteLocal(double[] gradienteCamadaAtualMaisUm, float[][] pesosCamadaAtualMaisUm, int posicao_neuronio){
+		
+		double gradiente = 0;
+		for(int i=0; i<gradienteCamadaAtualMaisUm.length; i++){
+			gradiente += (gradienteCamadaAtualMaisUm[i]*pesosCamadaAtualMaisUm[i][posicao_neuronio])*DerivadaSigmoide();
+		}
+		
+		this.gradienteLocal = gradiente;
 	}
 	
 	public void setEntradas(float[][] entradasTreino) {
@@ -209,15 +227,7 @@ public class Neuronio {
 		this.gradienteLocal = gradiente;
 	}
 	
-	public void setGradienteLocal(double[] gradienteAnterior, float[][] pesosCamadaAtualMaisUm, int posicao_neuronio){
-		
-		double gradiente = 0;
-		for(int i=0; i<gradienteAnterior.length; i++){
-			gradiente += (gradienteAnterior[i]*pesosCamadaAtualMaisUm[posicao_neuronio][i])*DerivadaSigmoide();
-		}
-		
-		this.gradienteLocal = gradiente;
-	}
+	
 	
 //	/**
 //	 * Realiza o teste da rede.

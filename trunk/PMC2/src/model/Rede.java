@@ -114,6 +114,7 @@ public class Rede {
 
 				for(int camada = 0; camada < camadas.length; camada++){
 					float saidaAnterior[] = null;
+
 					for(int neuronio = 0; neuronio < camadas[camada].getNumeroDeNeuronios(); neuronio++){ // este tava rodando com "amostra", porem deve rodar com "camada"
 
 						if(camada==0){ // Camada de entrada. Deve ler os dados da matriz de entradas.
@@ -161,6 +162,7 @@ public class Rede {
 				}
 
 				//inicio da fase de backward (determinar gradientes locais: da ultima para a primeira camada)	
+				double gradienteCamadaAtualMaisUm [] = null;
 				for(int j = camadas.length; j > 0; j--){ 
 
 					/* 
@@ -190,7 +192,7 @@ public class Rede {
 							for(int z=0; z<saidasNeuroniosCamadaAtualMeunosUm.length; z++){
 								saidasNeuroniosCamadaAtualMeunosUm[z] = camadas[CAMADA_ATUAL-1].getNeuronios()[z].getSaida();
 							}
-							
+
 							//Ajuste dos pesos: recebe a saida do neuronio correspondente da j-esima camada -1.
 							camadas[CAMADA_ATUAL].ajustaPesosDaCamada(k-1, taxaAprendizagem, saidasNeuroniosCamadaAtualMeunosUm); 
 
@@ -198,36 +200,41 @@ public class Rede {
 
 						} else{ // camadas mais internas
 
-							double[] gradienteCamadaAtualMaisUm = new double[camadas[CAMADA_ATUAL_MAIS_UM].getNumeroDeNeuronios()]; 
+							if(k==numNeuronios){ // Apenas na primeira iteração instacia o vetor e armazenas os valores nele
+								
+								gradienteCamadaAtualMaisUm = new double[camadas[CAMADA_ATUAL_MAIS_UM].getNumeroDeNeuronios()]; 
 
-							for(int a = 0; a < gradienteCamadaAtualMaisUm.length; a++){
-
-								gradienteCamadaAtualMaisUm[a] = camadas[CAMADA_ATUAL_MAIS_UM].getNeuronios()[a].getGradienteLocal(); //valores do gradiente da camada anterior(j+1)
+								for(int a = 0; a < gradienteCamadaAtualMaisUm.length; a++)
+									gradienteCamadaAtualMaisUm[a] = camadas[CAMADA_ATUAL_MAIS_UM].getNeuronios()[a].getGradienteLocal(); //valores do gradiente da camada anterior(j+1)
 							}
 
 							//calcula o gradiente local de um neuronio da camada atual
-							camadas[CAMADA_ATUAL].getNeuronios()[k-1].setGradienteLocal(gradienteCamadaAtualMaisUm, camadas[CAMADA_ATUAL_MAIS_UM].getPesos(), k-1);
+							camadas[CAMADA_ATUAL].getNeuronios()[k-1].calcularGradienteLocal(gradienteCamadaAtualMaisUm, camadas[CAMADA_ATUAL_MAIS_UM].getPesos(), k-1);
 
 
 							// Depois de calcular o gradiente local de um neuronio, deve-se ajustar a matriz de pesos da camada (deve atualizar "a porção" do neuronio em questão)
 							if(CAMADA_ATUAL>0 && CAMADA_ATUAL != camadas.length-1){ // camadas.length-1 é a camada de saída (que já foi calculada no 'if' da linha 184')
-								
-								
-								
+
+
+
 								/*
 								 * Doug, como temos duas camadas apenas esse if não é usado pq a camada de saida é calculada no if da linha 184
 								 * e a camada intermediária faz interface com matriz de entradas... Mesmo assim, vamos deixar esse if aqui só
 								 * por uma questão de genericidade.
 								 * 
 								 */
-								
+
 								// camadas escondidas: usam a saida de um neuronio da camada anterior
 								camadas[CAMADA_ATUAL].getNeuronios()[k-1].ajustaPesos(camadas[CAMADA_ATUAL].getNeuronios()[k-1].getSaida(), k-1, taxaAprendizagem);
 
 							}else{ 
 
 								// camada de entrada: usa a matriz de dados de treinamento
-								camadas[CAMADA_ATUAL].getNeuronios()[k-1].ajustaPesos(entradas[amostra][k-1], k-1, taxaAprendizagem); 
+								double saidasMatrizDeDados[] = new double [entradas[0].length-3];
+								for(int z=0; z<saidasMatrizDeDados.length; z++){
+									saidasMatrizDeDados[z] = entradas[amostra][z];
+								}
+								camadas[CAMADA_ATUAL].ajustaPesosDaCamada(k-1, taxaAprendizagem, saidasMatrizDeDados);
 							}
 
 						}
