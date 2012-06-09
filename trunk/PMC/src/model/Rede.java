@@ -5,7 +5,7 @@ import java.util.*;
 
 /**
  * 
- * @author Douglas e André
+ * @author André e Douglas
  *
  */
 

@@ -2,6 +2,12 @@ package model;
 
 import java.util.Random;
 
+/**
+ * 
+ * @author André e Douglas
+ *
+ */
+
 public class Camada {
 	
 	private int numeroDeEntradas;
