@@ -1,20 +1,17 @@
 package model;
 
-import java.util.Random;
-
-
 /**
  *
- * @author Andre e Douglas
+ * @author André e Douglas
  */
+
 public class Neuronio {
 
 	
 	public float[] pesos;
 	private double entradaPonderada;
 	private double saida;
-	private double gradienteLocal;
-	
+	private double gradienteLocal;	
 	public int numEpocas = 0;	
 
 	public Neuronio(int qtdPesos) {
@@ -24,9 +21,7 @@ public class Neuronio {
 		
 		for(int i =0; i < qtdPesos; i++){
 			pesos[i]= 0;
-
 		}
-
 	}
 
 	/**
@@ -36,6 +31,7 @@ public class Neuronio {
 	 * @param entrada : vetor das saidas da camada antetior
 	 * @return somatorio : somatorio ponderado das entradas do neuronio
 	 */
+	
 	public float SomatorioDeCamadaEscondida(float [] entrada, int num_neuronio, float [][] pesos) {
 
 		float aux = 0;
@@ -59,6 +55,7 @@ public class Neuronio {
 	 * @param pesos : matriz de pesos da camada onde o neuronio está.
 	 * @return somatorio : somatorio ponderado das entradas do neuronio.
 	 */
+	
 	public float SomatorioDaCamadaDeEntrada(int num_amostra, float[][]entradas, int num_neuronio, float [][] pesos) {
 
 		// this.entradas = entradas; Nao precisa!  Vamos usar apenas os valores da camada que é passado como argumento
@@ -66,12 +63,7 @@ public class Neuronio {
 		
 		for(int a = 0; a < entradas[0].length-3;a++){ // A subtração de 3 é porque as três ultimas posições são as saídas desejadas
 			aux+= entradas[num_amostra][a] * pesos[num_neuronio][a];
-			
-			/*System.out.println("entrada " + entradas[num_amostra][a] + " * peso" + pesos[num_neuronio][a]);
-			System.out.println("somatorio:" + aux);*/
-			
 		}
-		
 		return  aux;
 	}
 	
