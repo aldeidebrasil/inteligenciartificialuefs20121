@@ -1,11 +1,12 @@
 package model;
 
+import java.beans.ConstructorProperties;
 import java.io.*;
 import java.util.*;
 
 /**
- * 
- * @author Douglas e André
+ * Classe de abstração de um Perceptron de Multiplas Camadas
+ * @author André e Douglas
  *
  */
 
@@ -14,12 +15,12 @@ public class Rede {
 	private int numeroDeCamadas;
 	private Camada[] camadas;
 	private double taxaAprendizagem;
-	private double erro;
+	private double precisao;
 	private double eqm_atual;
 	private double eqm_anterior;
 	private float[][] entradas = new float[130][8];
 	private float[][] historicoDeSaidas; // armazena as saidas de cada epoca de treinamento para o calculo do EQM.
-	private double [] EQMs; // armazena os EQMs individuais e a media dos mesmos.
+	private double [] EQMs; // armazena os EQMs individuais de cada amostra.
 	private double EQM_Medio; // armazena a media dos EQMs.
 	private final int EPOCA;
 	private int numEpocas;
@@ -93,11 +94,11 @@ public class Rede {
 
 		setPesosCamadas();
 		taxaAprendizagem = 0.1;
-		erro = 10E-6;
+		precisao = 10E-6;
 		eqm_anterior = 10E9;
 		eqm_atual = 0;
 
-		while(Math.abs(eqm_atual - eqm_anterior) > erro){
+		while(Math.abs(eqm_atual - eqm_anterior) > precisao){
 			eqm_anterior = eqm_atual;
 			System.out.println("Época: " + numEpocas);
 			for(int amostra = 0; amostra < EPOCA; amostra++){ //iterar pela quantidade de entradas. "EPOCA = Quantidade de Entradas"
@@ -174,7 +175,7 @@ public class Rede {
 					int CAMADA_ATUAL_MAIS_UM = j;
 
 					int numNeuronios = camadas[CAMADA_ATUAL].getNumeroDeNeuronios(); 
-					int saidaDesejada =7; // posição da saída desejada na matriz de entradas;
+					int saidaDesejada = 7; // posição da saída desejada na matriz de entradas;
 
 					for(int k = numNeuronios; k > 0; k--){
 						if(CAMADA_ATUAL == camadas.length-1){ // camada de saida
@@ -182,13 +183,13 @@ public class Rede {
 							// Calcular gradiente local do k-esimo neuronio da camada j
 							camadas[CAMADA_ATUAL].getNeuronios()[k-1].CalcularGradienteLocal(entradas[amostra][saidaDesejada]);
 
-							double saidasNeuroniosCamadaAtualMeunosUm[] = new double [camadas[CAMADA_ATUAL-1].getNumeroDeNeuronios()];
-							for(int z=0; z<saidasNeuroniosCamadaAtualMeunosUm.length; z++){
-								saidasNeuroniosCamadaAtualMeunosUm[z] = camadas[CAMADA_ATUAL-1].getNeuronios()[z].getSaida();
+							double saidasNeuroniosCamadaAtualMenosUm[] = new double [camadas[CAMADA_ATUAL-1].getNumeroDeNeuronios()];
+							for(int z = 0; z < saidasNeuroniosCamadaAtualMenosUm.length; z++){
+								saidasNeuroniosCamadaAtualMenosUm[z] = camadas[CAMADA_ATUAL-1].getNeuronios()[z].getSaida();
 							}
 
 							//Ajuste dos pesos: recebe a saida do neuronio correspondente da j-esima camada -1.
-							camadas[CAMADA_ATUAL].ajustaPesosDaCamada(k-1, taxaAprendizagem, saidasNeuroniosCamadaAtualMeunosUm); 
+							camadas[CAMADA_ATUAL].ajustaPesosDaCamada(k-1, taxaAprendizagem, saidasNeuroniosCamadaAtualMenosUm); 
 
 							saidaDesejada--;
 
@@ -212,7 +213,7 @@ public class Rede {
 
 
 								/*
-								 * Como temos duas camadas apenas esse if não é usado pq a camada de saida é calculada no if da linha 184
+								 * Como temos duas camadas apenas esse if não é usado pq a camada de saida é calculada no if da linha 181
 								 * e a camada intermediária faz interface com matriz de entradas... Mesmo assim, vamos deixar esse if aqui só
 								 * por uma questão de usabilidade.
 								 * 
@@ -225,7 +226,7 @@ public class Rede {
 
 								// camada de entrada: usa a matriz de dados de treinamento
 								double saidasMatrizDeDados[] = new double [entradas[0].length-3];
-								for(int z=0; z<saidasMatrizDeDados.length; z++){
+								for(int z = 0; z < saidasMatrizDeDados.length; z++){
 									saidasMatrizDeDados[z] = entradas[amostra][z];
 								}
 								camadas[CAMADA_ATUAL].ajustaPesosDaCamada(k-1, taxaAprendizagem, saidasMatrizDeDados);
@@ -252,33 +253,46 @@ public class Rede {
 	 */
 	public void testar(){
 		
-			for(int i=0; i <entradas.length; i++){
-				for(int j=0; j<entradas[0].length; j++)
+			for(int i=0; i < entradas.length; i++){
+				for(int j=0; j< entradas[0].length; j++)
 					entradas[i][j]=0;
 			}
 	
 			try {
 				DataRequest("teste.txt");
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 	
 			System.out.print("Saida da rede: ");
 			for (int i = 0; i < 19; i++) { // quantidade de amostras de teste
-	
+				float[] saidaAnterior = null;
 				for(int camada = 0; camada < camadas.length; camada++){
 					for(int neuronio = 0; neuronio < camadas[i].getNumeroDeNeuronios(); neuronio++){
-						float aux = 0;
-						camadas[camada].getNeuronios()[neuronio].setSaida(1.5);
+						if(camada == 0){ //primeira camada escondida
+							float aux = camadas[camada].getNeuronios()[neuronio].SomatorioDaCamadaDeEntrada(i, entradas, neuronio, camadas[camada].getPesos());
+							camadas[camada].getNeuronios()[neuronio].setSaida(camadas[camada].getNeuronios()[neuronio].Sigmoide(aux));
+						}
+						else{ //Outras camadas
+							if (neuronio==0){ // Apenas uma vez (na primeira passada) instancia o vetor e pega os valores dos neuronios da camada anterior
+								saidaAnterior = new float[camadas[camada-1].getNumeroDeNeuronios()]; 
+								for(int a = 0; a < saidaAnterior.length; a++){ // Monta vetor com as saidas dos neuronios da camada anterior
+									saidaAnterior[a] = (float) camadas[camada-1].getNeuronios()[a].getSaida();
+								}
+							}
+							float aux = camadas[camada].getNeuronios()[neuronio].SomatorioDeCamadaEscondida(saidaAnterior, neuronio, camadas[camada].getPesos());
+							camadas[camada].getNeuronios()[neuronio].setSaida(camadas[camada].getNeuronios()[neuronio].Sigmoide(aux));
+						}
 					}
 				}
+				
+				
 			}
 			System.out.println("");
 	
 		}
 	
-			//System.out.println("Acertos: " + (numeroDeAcertos*100)/18 + "%");
+		//System.out.println("Acertos: " + (numeroDeAcertos*100)/18 + "%");
 
 	/**
 	 * Inicializa o vetor de pesos dos neuronio de cada camada
@@ -333,7 +347,4 @@ public class Rede {
 	public void setNumEpocas(int numEpocas) {
 		this.numEpocas = numEpocas;
 	}
-
-
-
 }

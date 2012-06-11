@@ -2,6 +2,11 @@ package model;
 
 import java.util.Random;
 
+/**
+ * 
+ * @author André e Douglas
+ *
+ */
 public class Camada {
 	
 	private int numeroDeEntradas;
@@ -111,7 +116,7 @@ public class Camada {
 		 */
 		double gradienteNeuronio = neuronios[posicaoNeuronio].getGradienteLocal();
 		
-		for(int a=0; a<pesos[0].length; a++){
+		for(int a = 0; a < pesos[0].length; a++){
 			
 			pesos[posicaoNeuronio][a]+= taxaAprendizado*gradienteNeuronio*saidasNeuroniosCamadaAnterior[a];
 		}

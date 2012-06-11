@@ -5,7 +5,7 @@ import model.Rede;
 
 /**
  * Classe para inicialização da rede
- * @author Douglas e André
+ * @author André e Douglas
  *
  */
 public class StartPMC {
@@ -28,16 +28,16 @@ public class StartPMC {
 		// 5 é o número de neuronios da camada intermediária. Neste caso a segunda camda, pois a primeira, camada de entrada, e matriz de dados.
 		int [] qtdNeuroniosPorCamada = {qtdNeuroniosCamadaIntermediaria,3}; 
 		// 5 é número de entradas na camada intermediária e 5 é o número de entradas da camada de saída
-		int [] entradasPorCamadas = {5,qtdNeuroniosCamadaIntermediaria+1};
+		int [] entradasPorCamadas = {5,qtdNeuroniosCamadaIntermediaria};
 		
 			
 	Rede rede = new Rede(2, qtdNeuroniosPorCamada, entradasPorCamadas);
 	
 	rede.treinar();
 	
-	System.out.println("A rede treinou em " + rede.getNumEpocas() + "Épocas");
+	System.out.println("A rede treinou em " + rede.getNumEpocas() + " Épocas");
 	
-	rede.testar();
+	//rede.testar();
 	
 	}
 	
