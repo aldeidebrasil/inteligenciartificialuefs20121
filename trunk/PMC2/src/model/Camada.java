@@ -41,6 +41,26 @@ public class Camada {
 		pesosIniciais = pesos;
 	}
 
+	public int getNumeroDeEntradas() {
+		return numeroDeEntradas;
+	}
+
+	public void setNumeroDeEntradas(int numeroDeEntradas) {
+		this.numeroDeEntradas = numeroDeEntradas;
+	}
+
+	public float[][] getPesosIniciais() {
+		return pesosIniciais;
+	}
+
+	public void setPesosIniciais(float[][] pesosIniciais) {
+		this.pesosIniciais = pesosIniciais;
+	}
+
+	public void setPesos(float[][] pesos) {
+		this.pesos = pesos;
+	}
+
 	public float[] getPesosCorrespondentes(int numPosicao, int numNeuronios){
 		float[] pesosCorrespondentes = new float[numNeuronios];
 		

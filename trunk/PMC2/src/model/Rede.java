@@ -66,13 +66,6 @@ public class Rede {
 		//6 -> Y2;
 		//7 -> Y3;
 
-		//Contar a quantidade de linhas do arquivo
-		File arquivoLeitura = new File(arquivo);  
-		LineNumberReader linhaLeitura = new LineNumberReader(new FileReader(arquivoLeitura));  
-		linhaLeitura.skip(arquivoLeitura.length());  
-		int qtdLinha = linhaLeitura.getLineNumber()+1;
-
-
 		//Leitura do arquivo para inserção dos valores no vetor de entradas 'x'
 		File f = new File(arquivo);
 		Scanner scan = new Scanner(f);
@@ -83,12 +76,11 @@ public class Rede {
 			String linha = new String();
 			linha = scan.nextLine();
 			String[] vetx = linha.split(" ");           
-			//entradas = new float[qtdLinha][vetx.length]; // ERRADO: A CADA ITERARAÇAO UMA NOVA INSTANCIA DE 'entradas' É CRIADA E OS VALORES ANTIGOS SAO PERDIDOS //
 
 			// Os dados de cada amostra são transferidos para a matriz de entradas
-			for(int j = 0; j < vetx.length; j++)
+			for(int j = 0; j < vetx.length; j++){
 				entradas[line][j] = Float.parseFloat(vetx[j]);
-
+			}
 			line++;
 		}
 	}
@@ -106,6 +98,7 @@ public class Rede {
 		eqm_atual = 0;
 
 		while(Math.abs(eqm_atual - eqm_anterior) > erro){
+			eqm_anterior = eqm_atual;
 			System.out.println("Época: " + numEpocas);
 			for(int amostra = 0; amostra < EPOCA; amostra++){ //iterar pela quantidade de entradas. "EPOCA = Quantidade de Entradas"
 
@@ -137,7 +130,7 @@ public class Rede {
 							System.out.println(" \t Numero de neuronios da camada: " + camadas[camada].getNumeroDeNeuronios());
 							System.out.println(" \t Neuronio atual: " + neuronio);*/
 
-							if (neuronio==0){ // Apenas uma vez (na primeira passada) instacia o vetor e pega os valores dos neuronios da camada anterior
+							if (neuronio==0){ // Apenas uma vez (na primeira passada) instancia o vetor e pega os valores dos neuronios da camada anterior
 								saidaAnterior = new float[camadas[camada-1].getNumeroDeNeuronios()]; 
 								for(int a = 0; a < saidaAnterior.length; a++){ // Monta vetor com as saidas dos neuronios da camada anterior
 									saidaAnterior[a] = (float) camadas[camada-1].getNeuronios()[a].getSaida();
@@ -219,9 +212,9 @@ public class Rede {
 
 
 								/*
-								 * Doug, como temos duas camadas apenas esse if não é usado pq a camada de saida é calculada no if da linha 184
+								 * Como temos duas camadas apenas esse if não é usado pq a camada de saida é calculada no if da linha 184
 								 * e a camada intermediária faz interface com matriz de entradas... Mesmo assim, vamos deixar esse if aqui só
-								 * por uma questão de genericidade.
+								 * por uma questão de usabilidade.
 								 * 
 								 */
 
@@ -248,10 +241,44 @@ public class Rede {
 			}
 			numEpocas++;
 			calculaEQMmedio();
+			eqm_atual = EQM_Medio;
 			System.out.println("Erro atual: " + Math.abs(eqm_atual - eqm_anterior));
 		}	
 		
 	}
+	
+	/**
+	 * Realiza o teste da rede
+	 */
+	public void testar(){
+		
+			for(int i=0; i <entradas.length; i++){
+				for(int j=0; j<entradas[0].length; j++)
+					entradas[i][j]=0;
+			}
+	
+			try {
+				DataRequest("teste.txt");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	
+			System.out.print("Saida da rede: ");
+			for (int i = 0; i < 19; i++) { // quantidade de amostras de teste
+	
+				for(int camada = 0; camada < camadas.length; camada++){
+					for(int neuronio = 0; neuronio < camadas[i].getNumeroDeNeuronios(); neuronio++){
+						float aux = 0;
+						camadas[camada].getNeuronios()[neuronio].setSaida(1.5);
+					}
+				}
+			}
+			System.out.println("");
+	
+		}
+	
+			//System.out.println("Acertos: " + (numeroDeAcertos*100)/18 + "%");
 
 	/**
 	 * Inicializa o vetor de pesos dos neuronio de cada camada
