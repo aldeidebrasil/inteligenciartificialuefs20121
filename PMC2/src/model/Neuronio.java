@@ -1,8 +1,5 @@
 package model;
 
-import java.util.Random;
-
-
 /**
  *
  * @author Andre e Douglas
@@ -15,13 +12,11 @@ public class Neuronio {
 	private double saida;
 	private float taxaDeAprendizado;
 	private boolean erroExiste;
-	private Random aleatorio;
 	private double gradienteLocal;
 	
 	public int numEpocas = 0;	
 
-	public Neuronio() {
-		aleatorio = new Random();		
+	public Neuronio() {		
 		pesos = new float[5]; //verificar como generalizar
 		gradienteLocal = 0;
 		
@@ -29,19 +24,6 @@ public class Neuronio {
 			pesos[i]=(float) 0.0;
 
 		}
-
-	}
-
-	/**
-	 * Atribui valores aleatï¿½rios ao vetor de pesos da rede.
-	 * A aleatoriedade entre 0 e 1 ï¿½ garantida com o uso do java.util.Random 
-	 * 
-	 */
-	public void setaPesosAleatorios() {
-		this.pesos[0] = (float) aleatorio.nextFloat();
-		this.pesos[1] = (float) aleatorio.nextFloat();
-		this.pesos[2] = (float) aleatorio.nextFloat();
-		this.pesos[3] = (float) aleatorio.nextFloat();
 
 	}
 
@@ -226,8 +208,30 @@ public class Neuronio {
 		}
 		this.gradienteLocal = gradiente;
 	}
-	
-	
+
+	public boolean isErroExiste() {
+		return erroExiste;
+	}
+
+	public void setErroExiste(boolean erroExiste) {
+		this.erroExiste = erroExiste;
+	}
+
+	public int getNumEpocas() {
+		return numEpocas;
+	}
+
+	public void setNumEpocas(int numEpocas) {
+		this.numEpocas = numEpocas;
+	}
+
+	public float[][] getEntradas() {
+		return entradas;
+	}
+
+	public float getTaxaDeAprendizado() {
+		return taxaDeAprendizado;
+	}
 	
 //	/**
 //	 * Realiza o teste da rede.
@@ -262,42 +266,6 @@ public class Neuronio {
 //	}
 //
 //	//System.out.println("Acertos: " + (numeroDeAcertos*100)/9 + "%");
-//
-//
-//
-//	/**
-//	 * Faz a leitura do arquivo de dados no formato ".txt" e transporta dos dados para uma matriz de floats.
-//	 * Deve ser passado como parametro a nome do arquivo de texto.
-//	 * 
-//	 * @param arquivo
-//	 * @throws FileNotFoundException
-//	 */
-//	public void DataRequest(String arquivo) throws FileNotFoundException{
-//
-//		entradas = new float[30][5]; 	//0 -> X0;
-//										//1 -> X1;
-//										//2 -> X2;
-//										//3 -> X3;
-//										//4 -> saida desejada
-//
-//		//Leitura do arquivo para inserção dos valores no vetor de entradas 'x'
-//		File f = new File(arquivo);
-//		Scanner scan = new Scanner(f);
-//
-//		int line = 0;
-//		while(scan.hasNextLine()){
-//
-//			String linha = new String();
-//			linha = scan.nextLine();
-//			String[] vetx = linha.split(" ");           
-//
-//			for(int j = 0; j < 5; j++){
-//				entradas[line][j] = Float.parseFloat(vetx[j]);                    
-//			}
-//			entradas[line][4] = Float.parseFloat(vetx[4]); //saida desejada é a posicação 4 da matriz de cada amostra
-//			line++;
-//		}
-//	}
 	
 	
 }
