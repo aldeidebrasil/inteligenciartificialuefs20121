@@ -2,7 +2,7 @@ package model;
 
 /**
  *
- * @author Andre e Douglas
+ * @author André e Douglas
  */
 public class Neuronio {
 
@@ -232,40 +232,4 @@ public class Neuronio {
 	public float getTaxaDeAprendizado() {
 		return taxaDeAprendizado;
 	}
-	
-//	/**
-//	 * Realiza o teste da rede.
-//	 * 
-//	 * @throws FileNotFoundException
-//	 */
-//	public void teste() throws FileNotFoundException {
-//
-//
-//		for(int i=0; i <entradas.length; i++){
-//			for(int j=0; j<entradas[0].length; j++ )
-//				entradas[i][j]=0;
-//		}
-//
-//		DataRequest("testePerceptron.txt");
-//
-//		System.out.print("Saida da rede: ");
-//		for (int i = 0; i < 9; i++) { // quantidade de amostras de teste
-//
-//			// Soma Ponderada das Entradas
-//			float somatorio = Somatorio(i);
-//			//System.out.println("somatorio = " + somatorio);
-//
-//			// Resultado da soma ponderada passando pela funï¿½ï¿½o de ativaï¿½ï¿½o
-//			//int saidaFuncaoSinal = funcaoDeAtivacaoBipolar(somatorio);
-//			//System.out.print(saidaFuncaoSinal);
-//
-//
-//		}
-//		System.out.println("");
-//
-//	}
-//
-//	//System.out.println("Acertos: " + (numeroDeAcertos*100)/9 + "%");
-	
-	
 }
