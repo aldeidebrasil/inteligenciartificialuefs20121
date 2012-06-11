@@ -41,8 +41,8 @@ public class Rede {
 			this.camadas[i].setNumeroDeNeuronios(qtdNeuroniosPorCamada[i]);
 		}
 
-		EQMs = new double[camadas[numeroDeCamadas-1].getNumeroDeNeuronios()];
-		historicoDeSaidas = new float [entradas.length-1][camadas[numeroDeCamadas-1].getNumeroDeNeuronios()];
+		EQMs = new double [entradas.length]; //new double[camadas[numeroDeCamadas-1].getNumeroDeNeuronios()];
+		historicoDeSaidas = new float [entradas.length][camadas[numeroDeCamadas-1].getNumeroDeNeuronios()];
 		EPOCA = entradas.length;
 		numEpocas=0;
 
@@ -106,12 +106,12 @@ public class Rede {
 		eqm_atual = 0;
 
 		while(Math.abs(eqm_atual - eqm_anterior) > erro){
-
+			System.out.println("Época: " + numEpocas);
 			for(int amostra = 0; amostra < EPOCA; amostra++){ //iterar pela quantidade de entradas. "EPOCA = Quantidade de Entradas"
 
 				//ajustar saida de cada neuronio de cada camada
 				//inicio da fase forwarding
-
+				System.out.println("Amostra atual: " + amostra);
 				for(int camada = 0; camada < camadas.length; camada++){
 					float saidaAnterior[] = null;
 
@@ -122,19 +122,20 @@ public class Rede {
 							float aux = camadas[camada].getNeuronios()[neuronio].SomatorioDaCamadaDeEntrada(amostra, entradas, neuronio, camadas[camada].getPesos());
 							camadas[camada].getNeuronios()[neuronio].setSaida(camadas[camada].getNeuronios()[neuronio].Sigmoide(aux));
 
+							/*
 							System.out.println("Camada:" + camada);
 							System.out.println(" \t Numero de neuronios da camada: " + camadas[camada].getNumeroDeNeuronios());
 							System.out.println(" \t Neuronio atual: " + neuronio);
 							System.out.println(" \t Somatorio ponderado das entradas do neurorio " + neuronio + ": " + aux);
-							System.out.println(" \t Saida do neuronio " + neuronio + ": " + camadas[camada].getNeuronios()[neuronio].getSaida());
+							System.out.println(" \t Saida do neuronio " + neuronio + ": " + camadas[camada].getNeuronios()[neuronio].getSaida());*/
 
 
 
 						} else{ // Camada escondida. Deve ler a saída dos neuronios da camada anterior.
 
-							System.out.println("Camada:" + camada);
+							/*System.out.println("Camada:" + camada);
 							System.out.println(" \t Numero de neuronios da camada: " + camadas[camada].getNumeroDeNeuronios());
-							System.out.println(" \t Neuronio atual: " + neuronio);
+							System.out.println(" \t Neuronio atual: " + neuronio);*/
 
 							if (neuronio==0){ // Apenas uma vez (na primeira passada) instacia o vetor e pega os valores dos neuronios da camada anterior
 								saidaAnterior = new float[camadas[camada-1].getNumeroDeNeuronios()]; 
@@ -146,9 +147,9 @@ public class Rede {
 							float aux = camadas[camada].getNeuronios()[neuronio].SomatorioDeCamadaEscondida(saidaAnterior, neuronio, camadas[camada].getPesos());
 							camadas[camada].getNeuronios()[neuronio].setSaida(camadas[camada].getNeuronios()[neuronio].Sigmoide(aux));
 
-
+							/*
 							System.out.println(" \t Somatorio ponderado das entradas do neurorio " + neuronio + ": " + aux);
-							System.out.println(" \t Saida do neuronio " + neuronio + ": " + camadas[camada].getNeuronios()[neuronio].getSaida());
+							System.out.println(" \t Saida do neuronio " + neuronio + ": " + camadas[camada].getNeuronios()[neuronio].getSaida());*/
 						}
 					}
 				}/*Aqui todos os neuronios de todas as camadas ja estam com os suas saidas calculadas
@@ -247,7 +248,9 @@ public class Rede {
 			}
 			numEpocas++;
 			calculaEQMmedio();
+			System.out.println("Erro atual: " + Math.abs(eqm_atual - eqm_anterior));
 		}	
+		
 	}
 
 	/**
@@ -269,10 +272,11 @@ public class Rede {
 	public void calculaEQM(int amostra){
 
 		double aux=0;
-		for(int i = 0; i < camadas[numeroDeCamadas].getNumeroDeNeuronios(); i++){
+		int saidaDesejada=5;
+		for(int i = 0; i < camadas[numeroDeCamadas-1].getNumeroDeNeuronios(); i++){
 
-			aux += Math.pow((historicoDeSaidas[amostra][i] - entradas[amostra][entradas[0].length]), 2); // "entradas[amostra][entradas[0].length]" saida desejada
-
+			aux += Math.pow((historicoDeSaidas[amostra][i] - entradas[amostra][saidaDesejada]), 2); // "entradas[amostra][entradas[0].length]" saida desejada
+			saidaDesejada++;
 		}
 
 		EQMs[amostra] = aux/2;
