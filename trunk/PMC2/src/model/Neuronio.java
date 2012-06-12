@@ -21,7 +21,7 @@ public class Neuronio {
 		gradienteLocal = 0;
 		
 		for(int i =0; i <=3; i++){
-			pesos[i]=(float) 0.0;
+			pesos[i] = (float) 0.0;
 
 		}
 
@@ -75,17 +75,6 @@ public class Neuronio {
 	}
 	
 	/**
-	 * Ajusta o valor do vetor de peso para a amostra atual, se o resultado encontrado for diferente da resposta desejada.
-	 * 
-	 * @param saidaDoNeuronioAnterior : saida/resposta da funcao sigmoide
-	 * @param amostra : numero da amostra que esta sendo testada (amostra atual) 
-	 */
-	public void ajustaPesos(double saidaDoNeuronioAnterior, int posicaoSinapse, double taxaDeAprendizagem) {
-			
-		pesos[posicaoSinapse]+= taxaDeAprendizagem*gradienteLocal*saidaDoNeuronioAnterior; 
-	}
-
-	/**
 	 * Funcao de ativação Sigmoide
 	 * 
 	 * @param x
@@ -99,12 +88,11 @@ public class Neuronio {
 	/**
 	 * Calcula a derivada da Sigmoide no somatorio das entradas ponderadas 
 	 * A derivada é utilizada para o cálculo do gradiente local
-	 * @param somatorio
-	 * @return
+	 * @return g'(I)
 	 */
 	public double DerivadaSigmoide(){ 
 				
-		return (0.5 * entradaPonderada * (1 - entradaPonderada));
+		return (0.5 * Sigmoide(entradaPonderada)) * (1 - Sigmoide(entradaPonderada));
 				
 	}
 	
@@ -128,7 +116,7 @@ public class Neuronio {
 	 */
 	public void calcularGradienteLocal(int qtdNeuroniosCamadaAnt, Neuronio[] neuroniosCamadaAnt){
 		
-		for(int i = 0; i == qtdNeuroniosCamadaAnt; i++){
+		for(int i = 0; i < qtdNeuroniosCamadaAnt; i++){
 			gradienteLocal += neuroniosCamadaAnt[i].getGradienteLocal() * neuroniosCamadaAnt[i].getPesos()[i];
 		}
 		

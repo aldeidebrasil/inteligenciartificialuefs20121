@@ -18,6 +18,7 @@ public class StartPMC {
 	public static void main(String[] args) throws Exception {
 		// TODO Auto-generated method stub
 
+	
 		int qtdNeuroniosCamadaIntermediaria = 5; //Alterar esse numero para treinar com 5/10/15 neuronios
 		/* OBS: 
 		 * 		Camada de entrada: 5 "saídas" -> 4 delas (X1, X2, X3 e X4) são dados do problema e a outra (X0) é o limiar do neuronio
@@ -37,7 +38,8 @@ public class StartPMC {
 	
 	System.out.println("A rede treinou em " + rede.getNumEpocas() + " Épocas");
 	
-	//rede.testar();
+	rede.testar();
+	
 	
 	}
 	
