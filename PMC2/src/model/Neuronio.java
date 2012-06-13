@@ -17,10 +17,10 @@ public class Neuronio {
 	public int numEpocas = 0;	
 
 	public Neuronio() {		
-		pesos = new float[5]; //verificar como generalizar
+		pesos = new float[5];
 		gradienteLocal = 0;
 		
-		for(int i =0; i <=3; i++){
+		for(int i = 0; i <= 3; i++){
 			pesos[i] = (float) 0.0;
 
 		}

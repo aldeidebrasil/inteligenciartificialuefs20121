@@ -41,6 +41,7 @@ public class Rede {
 			this.camadas[i].setNumeroDeNeuronios(qtdNeuroniosPorCamada[i]);
 		}
 
+		//pesosAnterior = new float[numCamadas][qtdNeuroniosPorCamada[0]][5];
 		EQMs = new double [entradas.length]; 
 		historicoDeSaidas = new float [entradas.length][camadas[numeroDeCamadas-1].getNumeroDeNeuronios()];
 		EPOCA = entradas.length;
@@ -304,9 +305,16 @@ public class Rede {
 								saidasNeuroniosCamadaAtualMenosUm[z] = camadas[CAMADA_ATUAL-1].getNeuronios()[z].getSaida();
 							}
 
+							float pesosAnt[] = null;
+							if(numEpocas != 0)
+								pesosAnt = camadas[CAMADA_ATUAL].getPesos()[k-1];
+							
+							
 							//Ajuste dos pesos: recebe a saida do neuronio correspondente da j-esima camada -1.
-							camadas[CAMADA_ATUAL].ajustaPesosDaCamada(k-1, taxaAprendizagem, saidasNeuroniosCamadaAtualMenosUm); 
+							camadas[CAMADA_ATUAL].ajustaPesosDaCamadaComMomentum(numEpocas, pesosAnt, k-1, taxaAprendizagem, saidasNeuroniosCamadaAtualMenosUm); 
 
+							
+							
 							saidaDesejada--;
 
 						} else{ // camadas mais internas
@@ -336,7 +344,14 @@ public class Rede {
 								for(int z = 0; z < saidasMatrizDeDados.length; z++){
 									saidasMatrizDeDados[z] = entradas[amostra][z];
 								}
-									//camadas[CAMADA_ATUAL].ajustaPesosDaCamadaComMomentum(k-1, taxaAprendizagem, saidasMatrizDeDados);
+									
+								float pesosAnt[] = null;
+								if(numEpocas != 0)
+									pesosAnt = camadas[CAMADA_ATUAL].getPesos()[k-1];
+								
+								camadas[CAMADA_ATUAL].ajustaPesosDaCamadaComMomentum(numEpocas, pesosAnt, k-1, taxaAprendizagem, saidasMatrizDeDados);
+								
+								
 								
 							}
 
@@ -346,7 +361,7 @@ public class Rede {
 				}
 
 				calculaEQM(amostra);
-
+				
 			}
 			numEpocas++;
 			calculaEQMmedio();
@@ -427,6 +442,10 @@ public class Rede {
 
 		}
 	}
+	
+	public void copiarPesosAnteriores(){
+		
+	}
 
 	/**
 	 *  Calcula o Erro Quadratico Medio para uma amostra.
@@ -461,7 +480,11 @@ public class Rede {
 
 		EQM_Medio = aux/entradas.length;
 	}
-
+	
+	public void getPesosAnterior(){
+		
+	}
+	
 	public int getNumEpocas() {
 		return numEpocas;
 	}

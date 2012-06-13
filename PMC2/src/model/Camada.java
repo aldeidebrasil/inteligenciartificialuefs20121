@@ -123,16 +123,24 @@ public class Camada {
 		
 	}
 	
-public void ajustaPesosDaCamadaComMomentum(float[] pesosAnterior, int posicaoNeuronio, double taxaAprendizado, double [] saidasNeuroniosCamadaAnterior){
+public void ajustaPesosDaCamadaComMomentum(int numEpocas, float[] pesosAnterior, int posicaoNeuronio, double taxaAprendizado, double [] saidasNeuroniosCamadaAnterior){
 		
 		/*
 		 * gradienteNeuronio Gradiente local do neuronio para o qual está atualizando a "sua porção" da matriz de pesos.
 		 */
 		double gradienteNeuronio = neuronios[posicaoNeuronio].getGradienteLocal();
-		
-		for(int a = 0; a < pesos[0].length; a++){
+		float aux = 0;
+		if(numEpocas != 0){
+			for(int a = 0; a < pesos[0].length; a++){
 			
-			pesos[posicaoNeuronio][a] += 0.9*(pesos[posicaoNeuronio][a] - pesosAnterior[a]) + taxaAprendizado*gradienteNeuronio*saidasNeuroniosCamadaAnterior[a];
+				aux += 0.9*(pesos[posicaoNeuronio][a] - pesosAnterior[a]) + taxaAprendizado*gradienteNeuronio*saidasNeuroniosCamadaAnterior[a];
+			}
+			
+		} else{
+			for(int a = 0; a < pesos[0].length; a++){
+				
+				pesos[posicaoNeuronio][a] += taxaAprendizado*gradienteNeuronio*saidasNeuroniosCamadaAnterior[a];
+			}
 		}
 		
 	}
