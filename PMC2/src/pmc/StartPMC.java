@@ -34,7 +34,7 @@ public class StartPMC {
 			
 	Rede rede = new Rede(2, qtdNeuroniosPorCamada, entradasPorCamadas);
 	
-	rede.treinarComMomentum();
+	rede.treinar();
 	
 	System.out.println("A rede treinou em " + rede.getNumEpocas() + " Épocas");
 	
@@ -42,8 +42,4 @@ public class StartPMC {
 	
 	
 	}
-	
-	
-	
-
 }

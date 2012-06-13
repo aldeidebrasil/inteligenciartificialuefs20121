@@ -378,7 +378,7 @@ public class Rede {
 		
 			for(int i=0; i < entradas.length; i++){
 				for(int j=0; j< entradas[0].length; j++)
-					entradas[i][j]=0;
+					entradas[i][j] = 0;
 			}
 	
 			try {
@@ -419,8 +419,15 @@ public class Rede {
 					}
 				}
 				
+				System.out.println("Y1: " + camadas[1].getNeuronios()[0].getSaida());
+				System.out.println("Y2: " + camadas[1].getNeuronios()[1].getSaida());
+				System.out.println("Y3: " + camadas[1].getNeuronios()[2].getSaida());
+				System.out.println("saidaPos1: " + saidaPosProcessada[0]);
+				System.out.println("saidaPos2: " + saidaPosProcessada[1]);
+				System.out.println("saidaPos3: " + saidaPosProcessada[2]);
+				
 				if(entradas[amostra][5] == saidaPosProcessada[0] && entradas[amostra][6] == saidaPosProcessada[1] && entradas[amostra][7] == saidaPosProcessada[2]){
-					System.out.println("Amostra: " + amostra + " ta de boa!!");
+					System.out.println("Amostra: " + amostra + " OK!!");
 					numAcertos++;
 			
 				}
