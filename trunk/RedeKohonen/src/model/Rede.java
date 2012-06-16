@@ -4,29 +4,37 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Random;
 import java.util.Scanner;
 import java.util.Set;
 
 
 public class Rede {
 
-	
 	private HashMap<Integer, NeuronioKohonen> neuronios;
+	private int[] neuroniosVencedoresAtuais;
+	private int[] neuroniosVencedoresEpocaAnterior;
 	private double taxaAprendizagem;
 	private float[][] entradas = new float[120][3];
 	private int numEpocas;
+	private boolean modificou;
 	
 	public Rede(){
+		
+		neuroniosVencedoresAtuais = new int[120];
+		for(int i = 0; i < neuroniosVencedoresAtuais.length; i++){
+			neuroniosVencedoresAtuais[i] = 0;
+		}
+		
+		neuroniosVencedoresEpocaAnterior = new int[120];
+		for(int i = 0; i < neuroniosVencedoresEpocaAnterior.length; i++){
+			neuroniosVencedoresEpocaAnterior[i] = 0;
+		}
 		
 		neuronios = new HashMap<Integer, NeuronioKohonen>();
 	
 		for(int i = 1; i <= 16; i++){
 			neuronios.put(i, new NeuronioKohonen(i)); //Cada neuronio tem uma ID correspondente a sua posição no SOM(Self Organization Map)
 		}											  //Essa ID varia entre 1 e 16
-		
-		taxaAprendizagem = 0.001;
-		numEpocas = 0;
 	}
 	
 	/**
@@ -34,19 +42,30 @@ public class Rede {
 	 */
 	public void treinar(){
 		
-		boolean modificou = true;
+		modificou = true;
+		taxaAprendizagem = 0.001;
+		numEpocas = 0;		
+		Set<Integer> chaves = neuronios.keySet();
+		for(int chave: chaves){
+			neuronios.get(chave).setPesoAleatorio(); //Gerar pesos aleatorios nos neuronios
+		}
 		
 		while(modificou){ //enquanto algum vetor de pesos for modificado
 			
 			for(int i = 0; i < entradas.length; i++){ //iterar pela quantidade de amostras
 				
-				Set<Integer> chaves = neuronios.keySet();
-				for(int chave: chaves){
+				Set<Integer> indices = neuronios.keySet();
+				for(int chave: indices){
 					neuronios.get(chave).calculaNorma(entradas[i]); //Calcula a norma para todos os neuronios
 				}
 				
 				//retorna indice do neuronio vencedor
 				int neuronioVencedor = getNeuronioMenorNorma();
+				//guarda o indice do neuronio vencedor no vetor
+				neuroniosVencedoresAtuais[i] = neuronioVencedor;
+				
+				System.out.println("O neuronio vencedor da amostra "+ i +"é: "+ neuronioVencedor);
+				
 				//retorna a lista de indices de vizinhos do neuronio vencedor
 				ArrayList<Integer> vizinhos = neuronios.get(neuronioVencedor).getVizinhos(); 
 				
@@ -59,6 +78,31 @@ public class Rede {
 				}
 				
 			}
+			numEpocas++;
+			isModificou();
+			neuroniosVencedoresEpocaAnterior = neuroniosVencedoresAtuais;
+		}
+	}
+	
+	public void testar(){
+		
+		entradas = new float[12][3];
+		
+		try{
+			requisitarDados("teste.txt");
+		} catch(Exception e){
+			e.getStackTrace();
+		}
+		for(int i = 0; i < entradas.length; i++){
+		Set<Integer> indices = neuronios.keySet();
+		for(int chave: indices){
+			neuronios.get(chave).calculaNorma(entradas[i]); //Calcula a norma para todos os neuronios
+		}
+		
+		//retorna indice do neuronio vencedor
+		int neuronioVencedor = getNeuronioMenorNorma();
+		
+		System.out.println("A amostra "+ i + "é classificada pelo neuronio" + neuronioVencedor);
 		}
 	}
 	
@@ -84,7 +128,7 @@ public class Rede {
 	 * @param arquivo
 	 * @throws IOException 
 	 */
-	public void DataRequest(String arquivo) throws IOException{
+	public void requisitarDados(String arquivo) throws IOException{
 
 		//entradas = new float[][];     //0 -> X0;
 		//1 -> X1;
@@ -113,4 +157,31 @@ public class Rede {
 			line++;
 		}
 	}
+	
+	/**
+	 * Método para verificar se o neuronio vencedor da época atual é igual ao neuronio vencedor da época anterior.
+	 * Essa verificação é feita para cada amostra. Se os neuronios da época anterior e atual forem iguais, o treinamento é suspenso.
+	 */
+	public void isModificou(){
+		
+		for(int i = 0; i < neuroniosVencedoresAtuais.length; i++){
+			//Se algum neuronio vencedor for diferente, continua o algoritmo
+			if(neuroniosVencedoresAtuais[i] != neuroniosVencedoresEpocaAnterior[i]){ 
+				modificou = true;
+				return;
+			} 
+		}
+		
+		modificou = false;
+	}
+
+	public int getNumEpocas() {
+		return numEpocas;
+	}
+
+	public void setNumEpocas(int numEpocas) {
+		this.numEpocas = numEpocas;
+	}
+	
+
 }

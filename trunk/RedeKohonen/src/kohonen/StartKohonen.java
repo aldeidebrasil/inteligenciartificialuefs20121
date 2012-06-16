@@ -8,13 +8,14 @@ public class StartKohonen {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 
-		//Rede rede = new Rede();
+		Rede rede = new Rede();
 		
-		//rede.treinar();
+		rede.treinar();
 		
+		System.out.println("A rede treinou em "+ rede.getNumEpocas()+ " Épocas.");
 		
+		rede.testar();
 	}
 
 }
