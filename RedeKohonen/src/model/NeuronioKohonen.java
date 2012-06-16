@@ -3,6 +3,11 @@ package model;
 import java.util.ArrayList;
 import java.util.Random;
 
+/**
+ * 
+ * @author André e Douglas
+ *
+ */
 public class NeuronioKohonen {
 
 	private ArrayList<Integer> vizinhos;
@@ -20,31 +25,31 @@ public class NeuronioKohonen {
 	}
 	
 	public void setPesoAleatorio(){
-		for(int i = 0; i < 4; i++){
+		for(int i = 0; i < pesos.length; i++){
 			pesos[i] = aleatorio.nextFloat();			
 		}
 	}
 	
+	/**
+	 * Calculo a distancia entre o neuronio e o padrao através das entradas e dos pesos
+	 * @param entradas: vetor de entradas atual passado pela rede
+	 */
 	public void calculaNorma(float[] entradas){
 		
-		double normaEntrada = 0, normaPesos = 0;
+		double normaTemp = 0;
 		
-		//Revisar para ter certeza da formula de calculo de norma
+		// Calculo das normas do vetor de entradas
 		for(int i = 0; i < entradas.length; i++){
-			normaEntrada += Math.pow(entradas[i] - pesos[i], 2); // || v || = somatorio(x - w)²
+			normaTemp += Math.pow(entradas[i] - pesos[i], 2); // || v || = sqrt[somatorio(x - w)²]
 		}
 		
-		
-		for(int i = 0; i < pesos.length; i++){
-			normaPesos += Math.pow(entradas[i] - pesos[i], 2); // || v || = somatorio(x - w)²
-		}
-	
-		norma = normaEntrada - normaPesos;
+		// Tirar a raiz quadrada para finalizar o calculo
+		norma = Math.sqrt(normaTemp);
 	}
 	
 	/**
 	 * 
-	 * @return: Adiciona no ArrayList de vizinhos os indices dos neuronios que são vizinhos ao indicado pelo parametro posicao
+	 * @return: Adiciona no ArrayList de vizinhos os indices dos neuronios que são vizinhos ao neuronio indicado pelo parametro posicao
 	 * @param posicao: inteiro entre 1 e 16
 	 */
 	public void setVizinhos(int posicao) {
@@ -77,7 +82,7 @@ public class NeuronioKohonen {
 	public void ajustaPesos(double taxaAprendizagem, float[] entradas){
 		
 		for(int i = 0; i < pesos.length; i++){
-			pesos[i] += taxaAprendizagem*entradas[i]*pesos[i];
+			pesos[i] += taxaAprendizagem*(entradas[i] - pesos[i]);
 		}
 	}
 	
