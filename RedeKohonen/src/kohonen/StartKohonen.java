@@ -16,6 +16,9 @@ public class StartKohonen {
 		System.out.println("A rede treinou em "+ rede.getNumEpocas()+ " Épocas.");
 		
 		rede.testar();
+		
+		System.out.println("A rede treinou em "+ rede.getNumEpocas()+ " Épocas.");
+		
 	}
 
 }

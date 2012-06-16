@@ -16,33 +16,30 @@ public class Rede {
 	private double taxaAprendizagem;
 	private float[][] entradas = new float[120][3];
 	private int numEpocas;
-	private boolean modificou;
+	private boolean modificar;
 	
 	public Rede(){
 		
 		neuroniosVencedoresAtuais = new int[120];
-		for(int i = 0; i < neuroniosVencedoresAtuais.length; i++){
-			neuroniosVencedoresAtuais[i] = 0;
-		}
+		zerarVetor(neuroniosVencedoresAtuais);
 		
 		neuroniosVencedoresEpocaAnterior = new int[120];
-		for(int i = 0; i < neuroniosVencedoresEpocaAnterior.length; i++){
-			neuroniosVencedoresEpocaAnterior[i] = 0;
-		}
+		zerarVetor(neuroniosVencedoresEpocaAnterior);
 		
 		neuronios = new HashMap<Integer, NeuronioKohonen>();
 	
 		for(int i = 1; i <= 16; i++){
-			neuronios.put(i, new NeuronioKohonen(i)); //Cada neuronio tem uma ID correspondente a sua posição no SOM(Self Organization Map)
-		}											  //Essa ID varia entre 1 e 16
+			neuronios.put(i, new NeuronioKohonen(i)); //Cada neuronio tem uma ID correspondente a sua posição no SOM(Self Organization Map).
+		}											  //Essa ID varia entre 1 e 16, inclusive.
 	}
 	
 	/**
 	 * Realiza o treino de rede
+	 * 
 	 */
 	public void treinar(){
 		
-		modificou = true;
+		modificar = true;
 		taxaAprendizagem = 0.001;
 		numEpocas = 0;		
 		Set<Integer> chaves = neuronios.keySet();
@@ -50,7 +47,13 @@ public class Rede {
 			neuronios.get(chave).setPesoAleatorio(); //Gerar pesos aleatorios nos neuronios
 		}
 		
-		while(modificou){ //enquanto algum vetor de pesos for modificado
+		try{
+			requisitarDados("treina.txt");
+		} catch(IOException e){
+			e.getMessage();
+		}
+		
+		while(modificar){ //enquanto algum vetor de pesos for modificado
 			
 			for(int i = 0; i < entradas.length; i++){ //iterar pela quantidade de amostras
 				
@@ -59,12 +62,12 @@ public class Rede {
 					neuronios.get(chave).calculaNorma(entradas[i]); //Calcula a norma para todos os neuronios
 				}
 				
-				//retorna indice do neuronio vencedor
-				int neuronioVencedor = getNeuronioMenorNorma();
+				//retorna indice/chave do neuronio vencedor
+				int neuronioVencedor = getNeuronioVencedor();
 				//guarda o indice do neuronio vencedor no vetor
 				neuroniosVencedoresAtuais[i] = neuronioVencedor;
 				
-				System.out.println("O neuronio vencedor da amostra "+ i +"é: "+ neuronioVencedor);
+				System.out.println("O neuronio vencedor da amostra "+ i +" é: "+ neuronioVencedor);
 				
 				//retorna a lista de indices de vizinhos do neuronio vencedor
 				ArrayList<Integer> vizinhos = neuronios.get(neuronioVencedor).getVizinhos(); 
@@ -73,14 +76,15 @@ public class Rede {
 				neuronios.get(neuronioVencedor).ajustaPesos(taxaAprendizagem, entradas[i]);
 				
 				//ajusta os pesos dos neuronios vizinhos
-				for(int chave: vizinhos){
-					neuronios.get(vizinhos.get(chave)).ajustaPesos(taxaAprendizagem, entradas[i]);
+				for(int a = 0; a < vizinhos.size(); a++){
+					neuronios.get(vizinhos.get(a)).ajustaPesos(taxaAprendizagem, entradas[i]);
 				}
 				
 			}
 			numEpocas++;
 			isModificou();
-			neuroniosVencedoresEpocaAnterior = neuroniosVencedoresAtuais;
+			neuroniosVencedoresEpocaAnterior = neuroniosVencedoresAtuais.clone();
+			zerarVetor(neuroniosVencedoresAtuais);
 		}
 	}
 	
@@ -93,22 +97,29 @@ public class Rede {
 		} catch(Exception e){
 			e.getStackTrace();
 		}
+		
 		for(int i = 0; i < entradas.length; i++){
-		Set<Integer> indices = neuronios.keySet();
-		for(int chave: indices){
-			neuronios.get(chave).calculaNorma(entradas[i]); //Calcula a norma para todos os neuronios
-		}
+			
+			Set<Integer> indices = neuronios.keySet();
+			for(int chave: indices){
+				neuronios.get(chave).calculaNorma(entradas[i]); //Calcula a norma para todos os neuronios
+			}
 		
-		//retorna indice do neuronio vencedor
-		int neuronioVencedor = getNeuronioMenorNorma();
+			//retorna indice do neuronio vencedor
+			int neuronioVencedor = getNeuronioVencedor();
 		
-		System.out.println("A amostra "+ i + "é classificada pelo neuronio" + neuronioVencedor);
+			System.out.println("A amostra "+ i + " é classificada pelo neuronio " + neuronioVencedor);
+			
 		}
 	}
 	
-	public int getNeuronioMenorNorma(){
+	/**
+	 * Método de cálculo do neuronio vencedor. A menor norma indica o neuronio vencedor.
+	 * @return
+	 */
+	public int getNeuronioVencedor(){
 		
-		double menorNorma = 10000;
+		double menorNorma = 100;
 		int neuronioMenorNorma = -1;
 		
 		Set<Integer> chaves = neuronios.keySet();
@@ -121,6 +132,7 @@ public class Rede {
 		
 		return neuronioMenorNorma;
 	}
+	
 	/**
 	 * Faz a leitura do arquivo de dados no formato ".txt" e transporta dos dados para uma matriz de floats.
 	 * Deve ser passado como parametro a nome do arquivo de texto.
@@ -160,19 +172,25 @@ public class Rede {
 	
 	/**
 	 * Método para verificar se o neuronio vencedor da época atual é igual ao neuronio vencedor da época anterior.
-	 * Essa verificação é feita para cada amostra. Se os neuronios da época anterior e atual forem iguais, o treinamento é suspenso.
+	 * Essa verificação é feita entre as épocas a fim de suspender o treinamento ou não.
 	 */
 	public void isModificou(){
 		
 		for(int i = 0; i < neuroniosVencedoresAtuais.length; i++){
 			//Se algum neuronio vencedor for diferente, continua o algoritmo
 			if(neuroniosVencedoresAtuais[i] != neuroniosVencedoresEpocaAnterior[i]){ 
-				modificou = true;
+				modificar = true;
 				return;
 			} 
 		}
 		
-		modificou = false;
+		modificar = false;
+	}
+	
+	public void zerarVetor(int[] vetor){
+		for(int i = 0; i < vetor.length; i++){
+			vetor[i] = 0;
+		}
 	}
 
 	public int getNumEpocas() {

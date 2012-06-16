@@ -44,6 +44,7 @@ public class NeuronioKohonen {
 		}
 		
 		// Tirar a raiz quadrada para finalizar o calculo
+		// Essa norma representa a distancia entre o pesos do neuronio e as entradas
 		norma = Math.sqrt(normaTemp);
 	}
 	
@@ -59,15 +60,18 @@ public class NeuronioKohonen {
 				&& posicao + 1 != 17) {
 			vizinhos.add(posicao + 1);
 		}
+		
 		//Verifica se o neuronio tem vizinho a sua esquerda
 		if (posicao - 1 != 0 && posicao - 1 != 4 && posicao - 1 != 8
 				&& posicao - 1 != 12) {
 			vizinhos.add(posicao - 1);
 		}
+		
 		//Verifica se o neuronio tem vizinho em baixo
 		if (posicao + 4 <= 16) {
 			vizinhos.add(posicao + 4);
 		}
+		
 		//Verifica se o neuronio tem vizinho em cima
 		if (posicao - 4 >= 1) {
 			vizinhos.add(posicao - 4);
@@ -82,16 +86,12 @@ public class NeuronioKohonen {
 	public void ajustaPesos(double taxaAprendizagem, float[] entradas){
 		
 		for(int i = 0; i < pesos.length; i++){
-			pesos[i] += taxaAprendizagem*(entradas[i] - pesos[i]);
+			pesos[i] += taxaAprendizagem * (entradas[i] - pesos[i]);
 		}
 	}
 	
 	public ArrayList<Integer> getVizinhos(){
 		return vizinhos;
-	}
-	
-	public void setNorma(double norma){
-		this.norma = norma;
 	}
 	
 	public double getNorma(){
