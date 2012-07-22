@@ -12,6 +12,14 @@ public class ConjuntoNebuloso {
 	private int qtdDePontos; //quantidade de pontos no conjunto nebuloso que irá compor à quantidade de pontos totais
 							 //no universo de discurso da variavel de entrada que está associada a esse conjunto nebuloso
 	
+	/**
+	 * Construtor para preparar o calcula da funcao triangular
+	 * @param inicio
+	 * @param meioInicio
+	 * @param fim
+	 * @param qtdPontos
+	 * @param fp
+	 */
 	public ConjuntoNebuloso(double inicio, double meioInicio, double fim, int qtdPontos, FuncaoPertinencia fp){
 		
 		this.inicio = inicio;
@@ -22,6 +30,15 @@ public class ConjuntoNebuloso {
 		
 	}
 	
+	/**
+	 * Construtor para preparar o calculo da funcao trapezoide
+	 * @param inicio
+	 * @param meioInicio
+	 * @param meioFim
+	 * @param fim
+	 * @param qtdPontos
+	 * @param fp
+	 */
 	public ConjuntoNebuloso(double inicio, double meioInicio, double meioFim, double fim, int qtdPontos, FuncaoPertinencia fp){
 		this(inicio, meioInicio, fim, qtdPontos, fp);
 		this.meioFim = meioFim;
@@ -66,7 +83,11 @@ public class ConjuntoNebuloso {
 		if(antesMeio){
 			return (entrada - inicio) / (meioInicio - inicio); 
 		} else {
-			return (fim - entrada) / (fim - meioFim);
+			if(entrada > meioInicio && entrada < meioFim){
+				return 1;
+			}else{
+				return (fim - entrada) / (fim - meioFim);
+			}
 		}
 		
 	}

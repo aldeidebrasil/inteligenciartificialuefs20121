@@ -17,7 +17,7 @@ public class SistemaFuzzy {
 		temperatura.getConjunto().add(alta);
 		
 		double[] resultados = new double[temperatura.getConjunto().size()];
-		resultados = temperatura.calcularGrauPertinenciaDosConjuntos(850);
+		resultados = temperatura.calcularGrauPertinenciaDosConjuntos(950);
 		System.out.println(resultados[0]);
 		System.out.println(resultados[1]);
 		System.out.println(resultados[2]);
