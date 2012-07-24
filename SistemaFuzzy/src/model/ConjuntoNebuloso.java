@@ -6,7 +6,6 @@ public class ConjuntoNebuloso {
 	private double inicio;
 	private double meioInicio; //Ponto do meio na triangular e primeiro ponto com grau igual a 1 na trapezoide
 	private double meioFim; //Utilizar com a funcao trapezoide marcando o ultimo ponto com grau igual a 1
-	private double valorMeio;
 	private double fim;
 	private FuncaoPertinencia fp;
 	private int qtdDePontos; //quantidade de pontos no conjunto nebuloso que irá compor à quantidade de pontos totais
@@ -51,10 +50,10 @@ public class ConjuntoNebuloso {
 	 */
 	public double calculaGrauPertinencia(double entrada){
 		
-		if(entrada < inicio || entrada > fim)
+		if(entrada < inicio || entrada > fim){
 			return 0;
-		
-		else if(entrada == meioInicio){
+			
+		}else if(entrada == meioInicio){
 			return meioInicio;
 			
 		} else if(entrada < meioInicio){
@@ -106,7 +105,7 @@ public class ConjuntoNebuloso {
 			return (fim - entrada) / (fim - meioInicio);
 		}
 	}
-
+	
 	public double getInicio() {
 		return inicio;
 	}
@@ -129,14 +128,6 @@ public class ConjuntoNebuloso {
 
 	public void setMeioFim(double meioFim) {
 		this.meioFim = meioFim;
-	}
-
-	public double getValorMeio() {
-		return valorMeio;
-	}
-
-	public void setValorMeio(double valorMeio) {
-		this.valorMeio = valorMeio;
 	}
 
 	public double getFim() {

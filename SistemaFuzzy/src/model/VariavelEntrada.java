@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 public class VariavelEntrada {
 
-	ArrayList<ConjuntoNebuloso> conjunto;
-	int qtdPontosTotal;
+	private ArrayList<ConjuntoNebuloso> conjunto;
+	private int qtdPontosTotal;
 	
 	public VariavelEntrada(int qtdDePontos){
 		conjunto = new ArrayList<ConjuntoNebuloso>();
@@ -17,7 +17,7 @@ public class VariavelEntrada {
 	 * @param entrada
 	 * @return
 	 */
-	public double[] calcularGrauPertinenciaDosConjuntos(double entrada){
+	public double[] calcularGrauPertinenciaNosConjuntos(double entrada){
 		
 		double[] grausDePertinencia = new double[conjunto.size()];
 		
@@ -25,6 +25,14 @@ public class VariavelEntrada {
 			grausDePertinencia[i] = conjunto.get(i).calculaGrauPertinencia(entrada);
 		}
 		return grausDePertinencia;
+	}
+	
+	/**
+	 * Gerar os pontos que deve ser discretizados em cada variavel de entrada 
+	 */
+	public void gerarPontos() {
+		
+		
 	}
 	
 	public ArrayList<ConjuntoNebuloso> getConjunto() {
