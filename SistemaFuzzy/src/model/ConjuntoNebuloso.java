@@ -1,7 +1,8 @@
 package model;
 
-public class ConjuntoNebuloso {
+import java.util.ArrayList;
 
+public class ConjuntoNebuloso {
 	
 	private double inicio;
 	private double meioInicio; //Ponto do meio na triangular e primeiro ponto com grau igual a 1 na trapezoide
@@ -10,6 +11,7 @@ public class ConjuntoNebuloso {
 	private FuncaoPertinencia fp;
 	private int qtdDePontos; //quantidade de pontos no conjunto nebuloso que irá compor à quantidade de pontos totais
 							 //no universo de discurso da variavel de entrada que está associada a esse conjunto nebuloso
+	private ArrayList<Ponto> pontos;
 	
 	/**
 	 * Construtor para preparar o calcula da funcao triangular
@@ -106,6 +108,23 @@ public class ConjuntoNebuloso {
 		}
 	}
 	
+	/**
+	 * Gerar os pontos que devem ser discretizados nos conjuntos nebulosos
+	 * @param intervalo
+	 */
+	public void discretizarPontos(double intervalo) {
+	
+		pontos = new ArrayList<Ponto>();
+		double ponto = inicio;
+		
+		for (int i = 0; i < qtdDePontos; i++) {
+			Ponto p = new Ponto(ponto, calculaGrauPertinencia(ponto));
+			pontos.add(p);
+			ponto += intervalo;
+		}
+		
+	}
+	
 	public double getInicio() {
 		return inicio;
 	}
@@ -153,6 +172,8 @@ public class ConjuntoNebuloso {
 	public void setQtdDePontos(int qtdDePontos) {
 		this.qtdDePontos = qtdDePontos;
 	}
+
+	
 	
 	
 	
