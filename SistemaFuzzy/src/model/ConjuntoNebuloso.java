@@ -56,7 +56,7 @@ public class ConjuntoNebuloso {
 			return 0;
 			
 		}else if(entrada == meioInicio){
-			return meioInicio;
+			return 1;
 			
 		} else if(entrada < meioInicio){
 			//verificar tipo de funcao de pertinencia
