@@ -31,32 +31,32 @@ public class SistemaNebuloso {
 		temperatura.getConjunto().add(media);
 		temperatura.getConjunto().add(alta);
 
-		temperatura.discretizarPontos();
-//		double[] resultados = new double[temperatura.getConjunto().size()];
-//		resultados = temperatura.calcularGrauPertinenciaNosConjuntos(935);
+		//temperatura.discretizarPontos();
+		double[] resultados = new double[temperatura.getConjunto().size()];
+		resultados = temperatura.calcularGrauPertinenciaNosConjuntos(935);
 //
-//		System.out.println("--> Temperatura");
-//		System.out.println("Baixa: " + resultados[0]);
-//		System.out.println("Media:" + resultados[1]);
-//		System.out.println("Alta:" + resultados[2]);
+		System.out.println("--> Temperatura");
+		System.out.println("Baixa: " + resultados[0]);
+		System.out.println("Media: " + resultados[1]);
+		System.out.println("Alta: " + resultados[2]);
 
 		//----------CONFIGURANDO O VOLUME---------------
 		volume = new VariavelEntrada(500, 0.02);
 		baixa = new ConjuntoNebuloso(2, 2, 4.5, 7, 250, FuncaoPertinencia.TRAPEZOIDE);
 		media = new ConjuntoNebuloso(4.5, 7, 9.5, 250, FuncaoPertinencia.TRIANGULAR);
-		media = new ConjuntoNebuloso(7, 9.5, 12, 12, 250, FuncaoPertinencia.TRAPEZOIDE);
+		alta = new ConjuntoNebuloso(7, 9.5, 12, 12, 250, FuncaoPertinencia.TRAPEZOIDE);
 
 		volume.getConjunto().add(baixa);
 		volume.getConjunto().add(media);
 		volume.getConjunto().add(alta);
 
 		volume.discretizarPontos();
-//		resultados = volume.calcularGrauPertinenciaNosConjuntos(5);
-//
-//		System.out.println("--> Volume");
-//		System.out.println("Baixo: " + resultados[0]);
-//		System.out.println("Medio:" + resultados[1]);
-//		System.out.println("Alto:" + resultados[2]);
+ 		resultados = volume.calcularGrauPertinenciaNosConjuntos(8.75);
+
+		System.out.println("--> Volume");
+		System.out.println("Baixo: " + resultados[0]);
+		System.out.println("Medio: " + resultados[1]);
+		System.out.println("Alto: " + resultados[2]);
 
 		//---------CONFIGURANDO A PRESSAO--------------
 		pressao = new VariavelEntrada(500, 0.016);
@@ -69,17 +69,18 @@ public class SistemaNebuloso {
 		pressao.getConjunto().add(alta);
 
 		pressao.discretizarPontos();
-//		resultados = pressao.calcularGrauPertinenciaNosConjuntos(5);
-//
-//		System.out.println("--> Pressão");
-//		System.out.println("Baixa: " + resultados[0]);
-//		System.out.println("Media:" + resultados[1]);
-//		System.out.println("Alta:" + resultados[2]);
+		resultados = pressao.calcularGrauPertinenciaNosConjuntos(5);
+		
+		System.out.println("--> Pressão");
+		System.out.println("Baixa: " + resultados[0]);
+		System.out.println("Media: " + resultados[1]);
+		System.out.println("Alta: " + resultados[2]);
 		
 	}
 	
 	public static void main(String args[]){
 		
+		SistemaNebuloso sn = new SistemaNebuloso();
 		
 		
 	}
