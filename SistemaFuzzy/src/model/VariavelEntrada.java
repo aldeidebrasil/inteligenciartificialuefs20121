@@ -40,7 +40,7 @@ public class VariavelEntrada {
 		}
 	}
 	
-	public ArrayList<ConjuntoNebuloso> getConjunto() {
+	public ArrayList<ConjuntoNebuloso> getConjuntos() {
 		return conjuntosNebulosos;
 	}
 
