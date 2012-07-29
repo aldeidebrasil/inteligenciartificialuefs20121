@@ -52,7 +52,7 @@ public class Main {
 		
 		f.composicaoMaxMin(t, v);
 	
-
+		System.out.println("Pressão: " + f.desfuzzificacao());
 		
 		System.out.println(" =D ");
 
