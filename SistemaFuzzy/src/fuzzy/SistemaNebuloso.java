@@ -114,6 +114,17 @@ public class SistemaNebuloso {
 	}
 	
 	/**
+	 * Composicao max-min
+	 * @param mat1: matriz resultante de um operador mamdani
+	 * @param mat2: matriz resultante de outro operador mamdani
+	 */
+	public void compor(double[][] mat1, double mat2[][]){
+		
+		
+		
+	}
+	
+	/**
 	 * Operador de agregacao máximo
 	 */
 	public void agregar(){
@@ -137,7 +148,7 @@ public class SistemaNebuloso {
 	
 	/**
 	 * Aplicar o operador mandani nas regras ativadas, ou seja, se entrar no if, aplica-se MIN(x, y)
-	 * Primeiro indice do vetor resultadoFuzzificao indica a variavel de entrada
+	 * Primeiro indice do vetor resultadoFuzzificao indica a variavel de entrada(0 -> temperatura, 1 -> volume)
 	 * Segundo indice do vetor resultadoFuzzificao indica a variavel linguistica(baixa, media e alta)
 	 * Regras que nao foram ativadas possuirão o valor zero na matriz de ativacao
 	 */
