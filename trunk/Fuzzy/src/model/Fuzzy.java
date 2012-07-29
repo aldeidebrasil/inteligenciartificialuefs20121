@@ -279,8 +279,44 @@ public class Fuzzy {
 	}
 	
 
-	public void desfuzzificacao(){
-
+	public double desfuzzificacao(){
+		
+	
+		
+		/*
+		 * encontrando os limites da agregação: 
+		 * 
+		 * esq = primeiro valor cuja pertinencia é não nula
+		 * dir = ultimo valor cuja pertinencia é não nula 
+		 * 
+		 * */
+		
+		int esq, dir;
+		
+		int k =0;
+		
+		while(agregacaoPressao[k]==0)
+			k++;
+		
+		esq = k;
+		
+		while(agregacaoPressao[k]!=0)
+			k++;
+		
+		dir = k;
+		
+		// Cálculo do centro de massa
+		
+		double somaPesoPonderado=0;
+		double somaPeso =0;
+		
+		for(int i = esq; i <= dir; i++){
+			somaPesoPonderado += entradaPressao[i]*agregacaoPressao[i];
+			somaPeso += entradaPressao[i];
+		}
+		
+		return (somaPesoPonderado/somaPeso);
+				
 	}
 
 	public ArrayList<ConjuntoFuzzy> getTemperatura(){
