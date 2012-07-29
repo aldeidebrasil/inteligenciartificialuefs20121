@@ -20,7 +20,7 @@ public class Fuzzy {
 
 	public XYSeries pontos;
 	XYSeriesCollection dados = new XYSeriesCollection();
-	
+
 	private ArrayList<ConjuntoFuzzy> temperatura;
 	private ArrayList<ConjuntoFuzzy> volume;
 	private ArrayList<ConjuntoFuzzy> pressao;
@@ -42,7 +42,7 @@ public class Fuzzy {
 		temperatura = new ArrayList<ConjuntoFuzzy>();
 		volume = new ArrayList<ConjuntoFuzzy>();
 		pressao = new ArrayList<ConjuntoFuzzy>();
-		pontos = new XYSeries("Pontos Discretos");
+		pontos = new XYSeries("Agregação");
 
 	}
 
@@ -84,19 +84,19 @@ public class Fuzzy {
 		double aux = cj.get(k).getInicioIntervalo();
 
 		for(int i=0; i < numeroDePontos; i++){
-			
+
 			entrada[i] = aux;
 			aux += passo;
 			//pontos.add(i, aux);
 		}
-		
+
 		if(variavel==1)
 			entradaTemp = entrada; 
 		else if(variavel ==2)
 			entradaVol = entrada;
 		else if(variavel ==3)
 			entradaPressao = entrada;
-		
+
 	}
 
 
@@ -113,7 +113,7 @@ public class Fuzzy {
 	public void calculaGrauPertinencia(int variavel, ArrayList<ConjuntoFuzzy> cj, int numeroDePontos){
 		int k =0;
 		double grausDePertinencia[][] = new double[cj.size()][numeroDePontos];
-		
+
 		while(k < cj.size()){
 
 			double inicio = cj.get(k).getMin();
@@ -129,10 +129,10 @@ public class Fuzzy {
 					grausDePertinencia[k][i] = cj.get(k).calculaPertinencia(entrada[i]);
 					//pontos.add(entrada[i],grausDePertinencia[k][i]);
 				}
-					
+
 				else					
 					grausDePertinencia[k][i] = cj.get(k).calculaPertinencia(entrada[i],cj.get(k).getBaseMenor(), cj.get(k).getBaseMaior());
-					//pontos.add(entrada[i],grausDePertinencia[k][i]);
+				//pontos.add(entrada[i],grausDePertinencia[k][i]);
 			}
 			k++;
 			//dados.addSeries(pontos);
@@ -144,7 +144,7 @@ public class Fuzzy {
 			grauPertinenciaVol = grausDePertinencia;
 		else if(variavel ==3)
 			grauPertinenciaPressao = grausDePertinencia;
-		
+
 	}
 
 	/**
@@ -175,62 +175,62 @@ public class Fuzzy {
 	 * @param pressao Graus de pertinencia do volume: [0] baixo; [1] medio; [2] alto
 	 */
 	public void composicaoMaxMin(double[] temp, double[] vol){
-		
+
 		double r1 = 0, r2 = 0, r3 = 0, r4 = 0, r5 = 0, r6 = 0, r7 = 0, r8 = 0, r9 = 0;
 		double pres_baixa, pres_media, pres_alta;
-		
+
 		//R1: SE temp baixa & vol peq ENTAO pres baixa
 		if(temp[0] > 0 && vol[0] > 0){ 
 			r1 = Math.min(temp[0], vol[0]);
 		}
-		
+
 		// R2: SE temp media & vol peq ENTAO: pres baixa
 		if(temp[1] > 0 && vol[0] > 0){
 			r2 = Math.min(temp[1], vol[0]);
 		}
-		
+
 		//R3 SE temp alta & vol peq ENTAO: pres media
 		if(temp[2] > 0 && vol[0] > 0){
 			r3 = Math.min(temp[2], vol[0]);
 		}
-		
+
 		//R4 SE temp baixa & vol medio ENTAO: pres baixa
 		if(temp[0] > 0 && vol[1] > 0){
 			r4 = Math.min(temp[0], vol[1]);
 		}
-		
+
 		//R5 SE temp media & vol medio ENTAO: pres media
 		if(temp[1] > 0 && vol[1] > 0){
 			r5 = Math.min(temp[1], vol[1]);
 		}
-		
+
 		//R6 SE temp alta & vol medio ENTAO: pres alta
 		if(temp[2] > 0 && vol[1] > 0){
 			r6 = Math.min(temp[2], vol[1]);
 		}
-		
+
 		//R7 SE temp baixa & vol grande ENTAO: pres media
 		if(temp[0] > 0 && vol[2] > 0){
 			r7 = Math.min(temp[0], vol[2]);
 		}
-		
+
 		//R8 SE temp media & vol grande ENTAO: pres alta
 		if(temp[1] > 0 && vol[2] > 0){
-			r8 = Math.min(temp[1], vol[1]);
+			r8 = Math.min(temp[1], vol[2]);
 		}
-		
+
 		//R9 SE temp alta & vol grande ENTAO: pres alta
 		if(temp[2] > 0 && vol[2] > 0){
 			r9 = Math.min(temp[2], vol[2]);
 		}
-		
+
 		pres_baixa = Math.max(r1, Math.max(r2, r3));
 		pres_media = Math.max(r4, Math.max(r5, r6));
-		pres_alta = Math.max(r7, Math.max(r8, r8));
-		
+		pres_alta = Math.max(r7, Math.max(r8, r9));
+
 		implicacaoMadani(pres_baixa, pres_media, pres_alta);
 	}
-	
+
 	/**
 	 * Realiza a implicação do tipo mandani
 	 * 
@@ -241,27 +241,27 @@ public class Fuzzy {
 	 * @return
 	 */
 	public void implicacaoMadani(double pb, double pm, double pa){
-		
+
 		implicacaoPressao = new double[pressao.size()][entradaVol.length];
-		
+
 		// Aplicação da implicação Mandani para a pressão baixa
 		for(int  i=0; i < implicacaoPressao[0].length; i++){
 			implicacaoPressao[0][i] = Math.min(pb, grauPertinenciaPressao[0][i]);
 		}
-		
+
 		// Aplicaçãoo da implicação Mandani para pressão media
 		for(int  i=0; i < implicacaoPressao[0].length; i++){
 			implicacaoPressao[1][i] = Math.min(pm, grauPertinenciaPressao[1][i]);
 		}
-		
+
 		// Aplicação da implicaçao Mandani para pressão alta
 		for(int  i=0; i < implicacaoPressao[0].length; i++){
 			implicacaoPressao[2][i] = Math.min(pa, grauPertinenciaPressao[2][i]);
 		}
-		
+
 		agregacaoMax(implicacaoPressao);
 	}
-	
+
 	/**
 	 * Aplica o operador de agragação tipo máximo para agregar os os conjuntos nebulosos de pressao.
 	 * 
@@ -269,7 +269,7 @@ public class Fuzzy {
 	 */
 	public void agregacaoMax(double impPres[][]){
 		agregacaoPressao = new double[impPres[0].length];
-		
+
 		for(int i = 0; i < impPres[0].length; i++ ){
 			agregacaoPressao[i] = Math.max(impPres[0][i], Math.max(impPres[1][i],impPres[2][i]));
 			pontos.add(entradaPressao[i],agregacaoPressao[i]);
@@ -277,12 +277,12 @@ public class Fuzzy {
 		dados.addSeries(pontos);
 		plotaGrafico();
 	}
-	
+
 
 	public double desfuzzificacao(){
-		
-	
-		
+
+
+
 		/*
 		 * encontrando os limites da agregação: 
 		 * 
@@ -290,64 +290,64 @@ public class Fuzzy {
 		 * dir = ultimo valor cuja pertinencia é não nula 
 		 * 
 		 * */
-		
+
 		int esq, dir;
-		
+
 		int k =0;
-		
-		while(agregacaoPressao[k]==0)
+
+		while(agregacaoPressao[k]==0 & k < agregacaoPressao.length-1)
 			k++;
-		
+
 		esq = k;
-		
-		while(agregacaoPressao[k]!=0)
+
+		while(agregacaoPressao[k]!=0 & k < agregacaoPressao.length-1)
 			k++;
-		
+
 		dir = k;
-		
+
 		// Cálculo do centro de massa
-		
+
 		double somaPesoPonderado=0;
 		double somaPeso =0;
-		
+
 		for(int i = esq; i <= dir; i++){
 			somaPesoPonderado += entradaPressao[i]*agregacaoPressao[i];
 			somaPeso += entradaPressao[i];
 		}
-		
+
 		return (somaPesoPonderado/somaPeso);
-				
+
 	}
 
 	public ArrayList<ConjuntoFuzzy> getTemperatura(){
 		return temperatura;
 	}
-	
-		
-	
+
+
+
 	public ArrayList<ConjuntoFuzzy> getVolume() {
 		return volume;
 	}
-	
+
 	public ArrayList<ConjuntoFuzzy> getPressao(){
 		return pressao;
 	}
 
-	
+
 
 	/**
 	 * Método para analisar de forma mais visual a classificação dos neuronios
 	 */
 	public void plotaGrafico() {
-		
+
 		//XYSeriesCollection dados = new XYSeriesCollection();
 		//dados.addSeries(pontos);
-		
+
 		JFreeChart grafico = ChartFactory.createXYLineChart("",
-															"",
-															"",
-															dados, PlotOrientation.VERTICAL, true, true, true);
-		
+				"",
+				"",
+				dados, PlotOrientation.VERTICAL, true, true, true);
+
 		ChartPanel panel = new ChartPanel(grafico);
 		JFrame frame = new JFrame();
 		frame.setSize(640, 480);
@@ -355,7 +355,7 @@ public class Fuzzy {
 		frame.getContentPane().add(panel);
 		frame.setVisible(true);
 	}
-	
+
 	/**
 	 * Localiza um valor de pertiencia previamente calculado na fuzzyficação
 	 * 
@@ -363,22 +363,29 @@ public class Fuzzy {
 	 * @return
 	 */
 	public double[] encontraTemperatura(double valor){
-		
+
 		int k=0;
 		double temps[] = new double[temperatura.size()];
-		
-		while (entradaTemp[k]< valor){
-			k++;
+
+		if(valor <= 800){
+			k=0;
 		}
-		
+		else if(valor >= 1200){
+			k=499;
+		} else if(valor > 800 && valor < 1200){
+
+			while (entradaTemp[k]< valor){
+				k++;
+			}}
+
 		for(int i=0; i<temps.length; i++)
 			temps[i] = grauPertinenciaTemp[i][k];
-		
+
 		return temps;
-		
+
 	}
-	
-	
+
+
 	/**
 	 * Localiza um valor de pertiencia previamente calculado na fuzzyficação
 	 * 
@@ -386,22 +393,29 @@ public class Fuzzy {
 	 * @return
 	 */
 	public double[] encontraVolume(double valor){
-		
+
 		int k=0;
 		double vol[] = new double[volume.size()];
-		
-		while (entradaVol[k]< valor){
-			k++;
+
+		if(valor <= 2){
+			k=0;
 		}
-		
+		else if(valor >= 12){
+			k=499;
+		} else if(valor > 2 && valor < 12){
+			while (entradaVol[k]< valor){
+				k++;
+			}
+		}
+
 		for(int i =0; i<vol.length; i++)
 			vol[i] = grauPertinenciaVol[i][k];
-		
+
 		return vol;
-		
+
 	}
-	
-	
+
+
 	/**
 	 * Localiza um valor de pertiencia previamente calculado na fuzzyficação
 	 * 
@@ -409,19 +423,19 @@ public class Fuzzy {
 	 * @return
 	 */
 	public double[] encontraPressao(double valor){
-		
+
 		int k=0;
 		double pres[] = new double[pressao.size()];
-		
+
 		while (entradaPressao[k]< valor){
 			k++;
 		}
-		
+
 		for(int i =0; i<pres.length; i++)
 			pres[i] = grauPertinenciaPressao[i][k];
-		
+
 		return pres;
-		
+
 	}
 
 	public double[][] getGrauPertinenciaTemp() {
@@ -447,7 +461,7 @@ public class Fuzzy {
 	public void setGrauPertinenciaPressao(double[][] grauPertinenciaPressao) {
 		this.grauPertinenciaPressao = grauPertinenciaPressao;
 	}
-	
-	
-	
+
+
+
 }
