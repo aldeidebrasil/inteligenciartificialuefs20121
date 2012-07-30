@@ -79,7 +79,7 @@ public class Fuzzy {
 
 		// Este laço encontra os n valores do universo de discurso que são diferentes de zero 
 
-		double inicio = cj.get(k).getMin();
+		//double inicio = cj.get(k).getMin();
 		double passo = (cj.get(k).getFinalIntervalo()-cj.get(k).getInicioIntervalo())/numeroDePontos;
 		double aux = cj.get(k).getInicioIntervalo();
 
@@ -116,11 +116,11 @@ public class Fuzzy {
 
 		while(k < cj.size()){
 
-			double inicio = cj.get(k).getMin();
-			double fim = cj.get(k).getMax();
+			//double inicio = cj.get(k).getMin();
+			//double fim = cj.get(k).getMax();
 			int metodo = cj.get(k).getPertinencia();
-			double passo = (cj.get(k).getFinalIntervalo()-cj.get(k).getInicioIntervalo())/numeroDePontos;
-			double aux = cj.get(k).getInicioIntervalo();
+			//double passo = (cj.get(k).getFinalIntervalo()-cj.get(k).getInicioIntervalo())/numeroDePontos;
+			//double aux = cj.get(k).getInicioIntervalo();
 
 			// Este laço calcula o grau de pertinencia de cada valor encontrado no laço acima com os universos de discurso.
 			for(int i=0; i < numeroDePontos; i++){
@@ -178,100 +178,162 @@ public class Fuzzy {
 
 		double r1 = 0, r2 = 0, r3 = 0, r4 = 0, r5 = 0, r6 = 0, r7 = 0, r8 = 0, r9 = 0;
 		double pres_baixa, pres_media, pres_alta;
+		boolean[] ativouRegra = new boolean[9];
+		implicacaoPressao = new double[9][entradaVol.length];
 
 		//R1: SE temp baixa & vol peq ENTAO pres baixa
 		if(temp[0] > 0 && vol[0] > 0){ 
 			r1 = Math.min(temp[0], vol[0]);
+			ativouRegra[0] = true;
+			for(int  i=0; i < implicacaoPressao[0].length; i++){
+				implicacaoPressao[0][i] = Math.min(r1, grauPertinenciaPressao[0][i]);
+			}
 		}
 
 		// R2: SE temp media & vol peq ENTAO: pres baixa
 		if(temp[1] > 0 && vol[0] > 0){
 			r2 = Math.min(temp[1], vol[0]);
+			ativouRegra[1] = true;
+			for(int  i=0; i < implicacaoPressao[0].length; i++){
+				implicacaoPressao[1][i] = Math.min(r2, grauPertinenciaPressao[0][i]);
+			}
 		}
 
 		//R3 SE temp alta & vol peq ENTAO: pres media
 		if(temp[2] > 0 && vol[0] > 0){
 			r3 = Math.min(temp[2], vol[0]);
+			ativouRegra[2] = true;
+			for(int  i=0; i < implicacaoPressao[0].length; i++){
+				implicacaoPressao[2][i] = Math.min(r3, grauPertinenciaPressao[1][i]);
+			}
 		}
 
 		//R4 SE temp baixa & vol medio ENTAO: pres baixa
 		if(temp[0] > 0 && vol[1] > 0){
 			r4 = Math.min(temp[0], vol[1]);
+			ativouRegra[3] = true;
+			for(int  i=0; i < implicacaoPressao[0].length; i++){
+				implicacaoPressao[3][i] = Math.min(r3, grauPertinenciaPressao[0][i]);
+			}
 		}
 
 		//R5 SE temp media & vol medio ENTAO: pres media
 		if(temp[1] > 0 && vol[1] > 0){
 			r5 = Math.min(temp[1], vol[1]);
+			ativouRegra[4] = true;
+			for(int  i=0; i < implicacaoPressao[0].length; i++){
+				implicacaoPressao[4][i] = Math.min(r4, grauPertinenciaPressao[1][i]);
+			}
 		}
 
 		//R6 SE temp alta & vol medio ENTAO: pres alta
 		if(temp[2] > 0 && vol[1] > 0){
 			r6 = Math.min(temp[2], vol[1]);
+			ativouRegra[5] = true;
+			for(int  i=0; i < implicacaoPressao[0].length; i++){
+				implicacaoPressao[5][i] = Math.min(r6, grauPertinenciaPressao[2][i]);
+			}
 		}
 
 		//R7 SE temp baixa & vol grande ENTAO: pres media
 		if(temp[0] > 0 && vol[2] > 0){
 			r7 = Math.min(temp[0], vol[2]);
+			ativouRegra[6] = true;
+			for(int  i=0; i < implicacaoPressao[0].length; i++){
+				implicacaoPressao[6][i] = Math.min(r7, grauPertinenciaPressao[1][i]);
+			}
 		}
 
 		//R8 SE temp media & vol grande ENTAO: pres alta
 		if(temp[1] > 0 && vol[2] > 0){
 			r8 = Math.min(temp[1], vol[2]);
+			ativouRegra[7] = true;
+			for(int  i=0; i < implicacaoPressao[0].length; i++){
+				implicacaoPressao[7][i] = Math.min(r8, grauPertinenciaPressao[2][i]);
+			}
 		}
 
 		//R9 SE temp alta & vol grande ENTAO: pres alta
 		if(temp[2] > 0 && vol[2] > 0){
 			r9 = Math.min(temp[2], vol[2]);
+			ativouRegra[8] = true;
+			for(int  i=0; i < implicacaoPressao[0].length; i++){
+				implicacaoPressao[8][i] = Math.min(r9, grauPertinenciaPressao[2][i]);
+			}
 		}
 
-		pres_baixa = Math.max(r1, Math.max(r2, r3));
+		/*pres_baixa = Math.max(r1, Math.max(r2, r3));
 		pres_media = Math.max(r4, Math.max(r5, r6));
-		pres_alta = Math.max(r7, Math.max(r8, r9));
+		pres_alta = Math.max(r7, Math.max(r8, r9));*/
 
-		implicacaoMadani(pres_baixa, pres_media, pres_alta);
+		//implicacaoMadani(pres_baixa, pres_media, pres_alta);
+		agregacaoMax(implicacaoPressao,ativouRegra);
 	}
 
-	/**
-	 * Realiza a implicação do tipo mandani
-	 * 
-	 * @param pb pressao baixa após composicao Max-Min
-	 * @param pm pressao media após composicao Max-Min
-	 * @param pa pressao após composicao Max-Min
-	 * 
-	 * @return
-	 */
-	public void implicacaoMadani(double pb, double pm, double pa){
-
-		implicacaoPressao = new double[pressao.size()][entradaVol.length];
-
-		// Aplicação da implicação Mandani para a pressão baixa
-		for(int  i=0; i < implicacaoPressao[0].length; i++){
-			implicacaoPressao[0][i] = Math.min(pb, grauPertinenciaPressao[0][i]);
-		}
-
-		// Aplicaçãoo da implicação Mandani para pressão media
-		for(int  i=0; i < implicacaoPressao[0].length; i++){
-			implicacaoPressao[1][i] = Math.min(pm, grauPertinenciaPressao[1][i]);
-		}
-
-		// Aplicação da implicaçao Mandani para pressão alta
-		for(int  i=0; i < implicacaoPressao[0].length; i++){
-			implicacaoPressao[2][i] = Math.min(pa, grauPertinenciaPressao[2][i]);
-		}
-
-		agregacaoMax(implicacaoPressao);
-	}
+//	/**
+//	 * Realiza a implicação do tipo mandani
+//	 * 
+//	 * @param pb pressao baixa após composicao Max-Min
+//	 * @param pm pressao media após composicao Max-Min
+//	 * @param pa pressao após composicao Max-Min
+//	 * 
+//	 * @return
+//	 */
+//	public void implicacaoMadani(double pb, double pm, double pa){
+//
+//		
+//
+//		// Aplicação da implicação Mandani para a pressão baixa
+//		for(int  i=0; i < implicacaoPressao[0].length; i++){
+//			implicacaoPressao[0][i] = Math.min(pb, grauPertinenciaPressao[0][i]);
+//		}
+//
+//		// Aplicaçãoo da implicação Mandani para pressão media
+//		for(int  i=0; i < implicacaoPressao[0].length; i++){
+//			implicacaoPressao[1][i] = Math.min(pm, grauPertinenciaPressao[1][i]);
+//		}
+//
+//		// Aplicação da implicaçao Mandani para pressão alta
+//		for(int  i=0; i < implicacaoPressao[0].length; i++){
+//			implicacaoPressao[2][i] = Math.min(pa, grauPertinenciaPressao[2][i]);
+//		}
+//
+//		agregacaoMax(implicacaoPressao);
+//	}
 
 	/**
 	 * Aplica o operador de agragação tipo máximo para agregar os os conjuntos nebulosos de pressao.
 	 * 
 	 * @param impPres
 	 */
-	public void agregacaoMax(double impPres[][]){
+	public void agregacaoMax(double impPres[][], boolean[] ativouRegra){
 		agregacaoPressao = new double[impPres[0].length];
-
+		double[] maximosAtivados = new double[500];
+		double m01,m23,m45,m67,m8;
+		double m0123, m4567;
+		double m01234567;
+		
 		for(int i = 0; i < impPres[0].length; i++ ){
-			agregacaoPressao[i] = Math.max(impPres[0][i], Math.max(impPres[1][i],impPres[2][i]));
+			
+			for (int j = 0; j < 9; j++) {
+				if (ativouRegra[j]) {
+					maximosAtivados[j] = impPres[j][i];
+				}
+				
+				m01 = Math.max(maximosAtivados[0], maximosAtivados[1]);
+				m23 = Math.max(maximosAtivados[2], maximosAtivados[3]);
+				m45 = Math.max(maximosAtivados[4], maximosAtivados[5]);
+				m67 = Math.max(maximosAtivados[6], maximosAtivados[7]);
+				m0123 = Math.max(m01, m23);
+				m4567 = Math.max(m45, m67);
+				m01234567 = Math.max(m0123, m4567);
+				m8 = Math.max(maximosAtivados[8], m01234567);
+				
+				agregacaoPressao[i] = m8;
+			}
+			
+			
+			
 			pontos.add(entradaPressao[i],agregacaoPressao[i]);
 		}
 		dados.addSeries(pontos);
@@ -312,7 +374,7 @@ public class Fuzzy {
 
 		for(int i = esq; i <= dir; i++){
 			somaPesoPonderado += entradaPressao[i]*agregacaoPressao[i];
-			somaPeso += entradaPressao[i];
+			somaPeso += agregacaoPressao[i];
 		}
 
 		return (somaPesoPonderado/somaPeso);
