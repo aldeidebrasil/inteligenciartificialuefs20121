@@ -295,12 +295,12 @@ public class Fuzzy {
 
 		int k =0;
 
-		while(agregacaoPressao[k]==0 & k < agregacaoPressao.length-1)
+		while(agregacaoPressao[k]==0 && k < agregacaoPressao.length-1)
 			k++;
 
 		esq = k;
 
-		while(agregacaoPressao[k]!=0 & k < agregacaoPressao.length-1)
+		while(agregacaoPressao[k]!=0 && k < agregacaoPressao.length-1)
 			k++;
 
 		dir = k;
@@ -336,7 +336,7 @@ public class Fuzzy {
 
 
 	/**
-	 * Método para analisar de forma mais visual a classificação dos neuronios
+	 * Método para analisar de forma mais visual o resultado do sistema fuzzy
 	 */
 	public void plotaGrafico() {
 
