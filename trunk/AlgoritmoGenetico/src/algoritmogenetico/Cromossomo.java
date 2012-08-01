@@ -15,7 +15,13 @@ public class Cromossomo {
 		r = new Random();
 	}
 	
-	
+	public float calculaFitness(){
+		float fit;
+		
+		fit = 0; //transformar a codificacao de binario para um valor entre -1 e 2
+		
+		return fit;
+	}
 	
 	public void setGenesAleatorios(){
 		for (int i = 0; i < genes.size(); i++) {
