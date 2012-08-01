@@ -3,21 +3,24 @@ package algoritmogenetico;
 public class AlgoritmoGenetico {
 	
 	private Populacao populacao;
+	private float taxaMutacao;
+	private float taxaCruzamento;
+	private int qtdGeracoes;
 
-
-	public AlgoritmoGenetico(){
-		
+	public AlgoritmoGenetico(int tamPop, int qtdGeracoes){
+		populacao = new Populacao();
+		populacao.setTamanhoPopulacao(tamPop);
+		qtdGeracoes = this.qtdGeracoes;
 	}
 	
 	public void rodar(){
 		
-	}
-	
-	public void Elitismo(){
+		populacao.iniciarPopulacao();
 		
-	}
-	
-	public void roleta(){
+		int i = 0;
+		while(i < qtdGeracoes){
+			
+		}
 		
 	}
 

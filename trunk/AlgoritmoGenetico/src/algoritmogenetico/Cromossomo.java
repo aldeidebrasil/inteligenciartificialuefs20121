@@ -10,10 +10,12 @@ public class Cromossomo {
 	private int tamanho;
 	private Random r;
 	
-	public Cromossomo(){
+	public Cromossomo(int tamanho){
 		genes = new ArrayList<Integer>();
 		r = new Random();
 	}
+	
+	
 	
 	public void setGenesAleatorios(){
 		for (int i = 0; i < genes.size(); i++) {

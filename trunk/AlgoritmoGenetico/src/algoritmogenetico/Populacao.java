@@ -6,9 +6,8 @@ import java.util.Comparator;
 
 public class Populacao {
 
-	ArrayList<Cromossomo> populacao = new ArrayList<Cromossomo>();
+	private ArrayList<Cromossomo> individuos = new ArrayList<Cromossomo>();
 	private int tamanhoPopulacao;
-    private float desvioPadrao;
     
     public Populacao(){
     	
@@ -17,21 +16,21 @@ public class Populacao {
     public void iniciarPopulacao(){
        
             for(int i = 0; i < tamanhoPopulacao; i++){
-                Cromossomo cromossomo = new Cromossomo();
+                Cromossomo cromossomo = new Cromossomo(tamanhoPopulacao);
                 cromossomo.setGenesAleatorios();
-                populacao.add(cromossomo);
+                individuos.add(cromossomo);
             }
     }
     
     public Cromossomo getCromossomo(int pos){
     	
-    	return populacao.get(pos);
+    	return individuos.get(pos);
     	
     }
     
     public void ordenarPorFitness(){
     	
-    	 Collections.sort(populacao, new Comparator<Object>(){
+    	 Collections.sort(individuos, new Comparator<Object>(){
              @Override
              public int compare(Object o1, Object o2){
                  Cromossomo c1 = (Cromossomo) o1;
@@ -56,14 +55,15 @@ public class Populacao {
 		this.tamanhoPopulacao = tamanhoPopulacao;
 	}
 
-	public float getDesvioPadrao() {
-		return desvioPadrao;
+	public ArrayList<Cromossomo> getIndividuos() {
+		return individuos;
 	}
 
-	public void setDesvioPadrao(float desvioPadrao) {
-		this.desvioPadrao = desvioPadrao;
+	public void setIndividuos(ArrayList<Cromossomo> individuos) {
+		this.individuos = individuos;
 	}
     
+	
     
 
 }
