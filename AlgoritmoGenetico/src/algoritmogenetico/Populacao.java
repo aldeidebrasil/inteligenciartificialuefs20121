@@ -8,15 +8,17 @@ public class Populacao {
 
 	private ArrayList<Cromossomo> individuos = new ArrayList<Cromossomo>();
 	private int tamanhoPopulacao;
+	private int tamanhoCromossomo;
     
-    public Populacao(){
-    	
+    public Populacao(int tamPop, int tamCromo){
+    	this.tamanhoPopulacao = tamPop;
+    	this.tamanhoCromossomo = tamCromo;
     }
     
     public void iniciarPopulacao(){
        
             for(int i = 0; i < tamanhoPopulacao; i++){
-                Cromossomo cromossomo = new Cromossomo(tamanhoPopulacao);
+                Cromossomo cromossomo = new Cromossomo(tamanhoCromossomo); //substituir pelo tal tamanho 'm'
                 cromossomo.setGenesAleatorios();
                 individuos.add(cromossomo);
             }
