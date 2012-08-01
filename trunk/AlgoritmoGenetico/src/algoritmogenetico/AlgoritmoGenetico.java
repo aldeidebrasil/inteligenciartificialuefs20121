@@ -9,6 +9,10 @@ public class AlgoritmoGenetico {
 		
 	}
 	
+	public void rodar(){
+		
+	}
+	
 	public void Elitismo(){
 		
 	}
