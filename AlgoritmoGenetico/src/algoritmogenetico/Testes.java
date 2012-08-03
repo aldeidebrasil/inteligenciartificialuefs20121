@@ -5,8 +5,8 @@ import java.util.BitSet;
 public class Testes {
 
 	public static void main(String args[]){
-		BitSet bits1 = new BitSet(16);
-		BitSet bits2 = new BitSet(16);
+		BitSet bits1 = new BitSet();
+		BitSet bits2 = new BitSet();
 		// set some bits
 		for(int i=0; i<bits1.size(); i++) {
 		if((i%2) == 0) bits1.set(i);
