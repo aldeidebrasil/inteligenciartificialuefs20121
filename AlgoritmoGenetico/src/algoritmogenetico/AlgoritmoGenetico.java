@@ -45,7 +45,7 @@ public class AlgoritmoGenetico {
 			
 			geracoes++;
 		}
-		System.out.println();
+		//System.out.println();
 	}
 	
 	/**
@@ -118,8 +118,7 @@ public class AlgoritmoGenetico {
 	    }
 	 
 	 /**
-	  * Selecionar Cromossomos(individuos) para o possivel cruzamento ou
-	  * mutação
+	  * Selecionar Cromossomos(individuos) para o possivel cruzamento ou mutação através do método da roleta
 	  * @param populacao
 	  * @param qtdSele: tamanho da populacao
 	  * @return
@@ -131,17 +130,15 @@ public class AlgoritmoGenetico {
 	        int cont = 0;
 
 	        for (int i = 0; i < populacao.getTamanhoPopulacao(); i++) {
-	            sum += populacao.getCromossomo(i).getChance();
+	            sum += populacao.getCromossomo(i).getValorCromossomo();
 	        }
 
 	        while (cont < qtdSele) {
-	            double alea = rand.nextDouble();
-	            //double roda = Math.min(somaFitness * rand.nextDouble(), somaFitness);
-	            //sum = 0;
+	            double numAleatorio = rand.nextDouble();
 
 	            for (int i = 0; i < populacao.getTamanhoPopulacao(); i++) {
 	                //sum += populacao.getCromossomo(i).getFitness();
-	                if (sum >= alea) {
+	                if (sum >= numAleatorio) {
 	                    cromossomosSelecionados.add(populacao.getCromossomo(i));
 	                    break;
 	                }
@@ -153,7 +150,7 @@ public class AlgoritmoGenetico {
 	    }
 	 
 	 /**
-	  * Calcular fitness de cada cromossomo
+	  * Calcular fitness de cada cromossomo(indivíduo)
 	  */
 	 public void calcularFitness(){
 		 
