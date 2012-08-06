@@ -3,12 +3,23 @@ package algoritmogenetico;
 import java.util.ArrayList;
 import java.util.Random;
 
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
+
 public class AlgoritmoGenetico {
 	
 	private Populacao populacao;
 	private float taxaMutacao;
 	private float taxaCruzamento;
 	private int qtdGeracoes;
+	private XYSeries pontos;
 	private Random rand;
 	
 	public AlgoritmoGenetico(int tamPop,int tamCromo, int qtdGer, float txCruz, 
@@ -18,6 +29,7 @@ public class AlgoritmoGenetico {
 		taxaCruzamento = txCruz;
 		taxaMutacao = txMut;
 		qtdGeracoes = qtdGer;
+		pontos = new XYSeries("Melhor Indivíduo");
 		rand = new Random();
 	}
 	
@@ -26,7 +38,6 @@ public class AlgoritmoGenetico {
 		populacao.iniciarPopulacao();
 		converterFitnessBinarioParaDecimal();
 		calcularFitness();
-		//populacao.ordenarPorFitness();
 		
 		int geracoes = 0;
 		while(geracoes < qtdGeracoes){
@@ -43,8 +54,15 @@ public class AlgoritmoGenetico {
 			calcularFitness();
 			cortar();
 			
+			pontos.add(geracoes, populacao.getCromossomo(0).getValorCromossomo());
 			geracoes++;
 		}
+		
+		plotaGrafico();
+		String s = "Melhor resultado obtido foi: " + getMelhorResultado().getValorCromossomo() + "\n"
+				+ "Valor de Aptidão: " + getMelhorResultado().getFitness();
+		
+		JOptionPane.showMessageDialog(null, s);
 		//System.out.println();
 	}
 	
@@ -193,6 +211,28 @@ public class AlgoritmoGenetico {
 		 return populacao.getCromossomo(0);
 		 
 	 }
+	 
+	 /**
+	  * Plotar gráfico do melhor indivíduo
+	  */
+		public void plotaGrafico() {
+
+			XYSeriesCollection dados = new XYSeriesCollection();
+			dados.addSeries(pontos);
+
+			JFreeChart grafico = ChartFactory.createXYLineChart("Melhor Indivíduo",
+					"Gerações",
+					"Valor do Cromossomo do melhor indivíduo",
+					dados, PlotOrientation.VERTICAL, true, true, true);
+
+			ChartPanel panel = new ChartPanel(grafico);
+			JFrame frame = new JFrame();
+			frame.setSize(640, 480);
+			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			frame.getContentPane().add(panel);
+			frame.setVisible(true);
+		}
+
 
 	public Populacao getPopulacao() {
 		return populacao;
