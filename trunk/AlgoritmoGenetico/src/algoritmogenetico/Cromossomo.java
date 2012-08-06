@@ -6,9 +6,9 @@ import java.util.Random;
 public class Cromossomo {
 
 	private ArrayList<Integer> genes;
+	private double valorCromossomo;
 	private double fitness;
 	private int tamanho;
-	private double chance;
 	private Random aleatorio;
 	
 	/**
@@ -38,14 +38,17 @@ public class Cromossomo {
 		}
 		
 		//Gerando o valor com seis casas decimais
-		fitness = -1 + (soma * 3)/4194303;
+		valorCromossomo = -1 + (soma * 3)/4194303;
 		
 	}
 	
+	/**
+	 * Calculo do fitness com base do valor do cromossomo. Em suma resumi-se a uma função onde
+	 * ValorCromossomo é X e o fitness é Y
+	 */
 	public void calcularFitness(){
 		
-		fitness = fitness * Math.sin(10 * Math.PI * fitness) + 1 ;
-		chance = fitness + 1;
+		fitness = (valorCromossomo * Math.sin(10 * Math.PI * valorCromossomo)) + 1 ; //verificar se é +2 mesmo ou se deixa +1
 		
 	}
 	
@@ -66,6 +69,14 @@ public class Cromossomo {
 		this.genes = genes;
 	}
 
+	public double getValorCromossomo() {
+		return valorCromossomo;
+	}
+
+	public void setValorCromossomo(double fitness) {
+		this.valorCromossomo = fitness;
+	}
+
 	public double getFitness() {
 		return fitness;
 	}
@@ -81,14 +92,5 @@ public class Cromossomo {
 	public void setTamanho(int tamanho) {
 		this.tamanho = tamanho;
 	}
-	
-	public double getChance() {
-		return chance;
-	}
-
-	public void setChance(double chance) {
-		this.chance = chance;
-	}
-	
 
 }
