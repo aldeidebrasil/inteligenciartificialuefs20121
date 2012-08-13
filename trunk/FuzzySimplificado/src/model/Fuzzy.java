@@ -79,7 +79,7 @@ public class Fuzzy {
 
 		// Este laço encontra os n valores do universo de discurso que são diferentes de zero 
 
-		double inicio = cj.get(k).getMin();
+		//double inicio = cj.get(k).getMin();
 		double passo = (cj.get(k).getFinalIntervalo()-cj.get(k).getInicioIntervalo())/numeroDePontos;
 		double aux = cj.get(k).getInicioIntervalo();
 
@@ -105,7 +105,7 @@ public class Fuzzy {
 	 * Calcula os graus de pertinencia de todos os conjuntos nebulosos de uma variável linguistica.
 	 * 
 	 * @param variavel Indica para qual variável linguistica deve ser calculado os graus de pertinencia.
-	 * Este valor é importante para o armarzenamento correto dos graus de pertinencia calculados.
+	 * Este valor é importante para o armazenamento correto dos graus de pertinencia calculados.
 	 * 
 	 * @param cj Conjunto nebuloso pertencente a uma variável linguistica.
 	 * @param numeroDePontos Quantidade de pontos do universo de discurso.
@@ -116,11 +116,11 @@ public class Fuzzy {
 
 		while(k < cj.size()){
 
-			double inicio = cj.get(k).getMin();
-			double fim = cj.get(k).getMax();
+//			double inicio = cj.get(k).getMin();
+//			double fim = cj.get(k).getMax();
 			int metodo = cj.get(k).getPertinencia();
-			double passo = (cj.get(k).getFinalIntervalo()-cj.get(k).getInicioIntervalo())/numeroDePontos;
-			double aux = cj.get(k).getInicioIntervalo();
+//			double passo = (cj.get(k).getFinalIntervalo()-cj.get(k).getInicioIntervalo())/numeroDePontos;
+//			double aux = cj.get(k).getInicioIntervalo();
 
 			// Este laço calcula o grau de pertinencia de cada valor encontrado no laço acima com os universos de discurso.
 			for(int i=0; i < numeroDePontos; i++){
@@ -249,7 +249,7 @@ public class Fuzzy {
 			implicacaoPressao[0][i] = Math.min(pb, grauPertinenciaPressao[0][i]);
 		}
 
-		// Aplicaçãoo da implicação Mandani para pressão media
+		// Aplicação da implicação Mandani para pressão media
 		for(int  i=0; i < implicacaoPressao[0].length; i++){
 			implicacaoPressao[1][i] = Math.min(pm, grauPertinenciaPressao[1][i]);
 		}
@@ -307,8 +307,8 @@ public class Fuzzy {
 
 		// Cálculo do centro de massa
 
-		double somaPesoPonderado=0;
-		double somaPeso =0;
+		double somaPesoPonderado = 0;
+		double somaPeso = 0;
 
 		for(int i = esq; i <= dir; i++){
 			somaPesoPonderado += entradaPressao[i]*agregacaoPressao[i];
@@ -374,9 +374,10 @@ public class Fuzzy {
 			k=499;
 		} else if(valor > 800 && valor < 1200){
 
-			while (entradaTemp[k]< valor){
+			while (entradaTemp[k] < valor){
 				k++;
-			}}
+			}
+		}
 
 		for(int i=0; i<temps.length; i++)
 			temps[i] = grauPertinenciaTemp[i][k];
