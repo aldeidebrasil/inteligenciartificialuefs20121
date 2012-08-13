@@ -7,16 +7,13 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 
-		AlgoritmoGenetico ag = new AlgoritmoGenetico(100, 22, 200, 0.9f, 0.05f);
+		AlgoritmoGenetico ag = new AlgoritmoGenetico(100, 22, 200, 0.7f, 0.01f);
 		ag.rodar();
 		
-//		String s = "Melhor resultado obtido foi: " + ag.getMelhorResultado().getValorCromossomo() + "\n"
-//				+ "Valor de Aptidão: " + ag.getMelhorResultado().getFitness();
-//		
-//		JOptionPane.showMessageDialog(null, s);
+		Cromossomo melhorCromo = ag.getMelhorResultado();
 		
-		System.out.println("Melhor resultado obtido foi: " + ag.getMelhorResultado().getValorCromossomo());
-		System.out.println("Fitness: " + ag.getMelhorResultado().getFitness());
+		System.out.println("Melhor resultado obtido foi: " + melhorCromo.getValorCromossomo());
+		System.out.println("Fitness: " + melhorCromo.getFitness());
 
 	}
 

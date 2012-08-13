@@ -29,7 +29,7 @@ public class Populacao {
     }
     
     /**
-     * Ordenar arrayList de objetos Cromossos por fitness
+     * Ordenar arrayList de objetos Cromossos por ordem descendente de fitness
      */
     public void ordenarPorFitness(){
     	
@@ -57,10 +57,8 @@ public class Populacao {
 		this.tamanhoCromossomo = tamanhoCromossomo;
 	}
 
-	public Cromossomo getCromossomo(int pos){
-    	
-    	return individuos.get(pos);
-    	
+	public Cromossomo getCromossomo(int pos){    	
+    	return individuos.get(pos);    	
     }
     
 	public int getTamanhoPopulacao() {
@@ -78,8 +76,4 @@ public class Populacao {
 	public void setIndividuos(ArrayList<Cromossomo> individuos) {
 		this.individuos = individuos;
 	}
-    
-	
-    
-
 }
