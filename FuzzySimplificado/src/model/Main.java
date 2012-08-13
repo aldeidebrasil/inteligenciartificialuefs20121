@@ -47,8 +47,8 @@ public class Main {
 		
 		//f.plotaGrafico();
 
-		double t[] = f.encontraTemperatura(847); //998
-		double v[] = f.encontraVolume(10.789); // 6.5
+		double t[] = f.encontraTemperatura(965); 
+		double v[] = f.encontraVolume(11);
 		
 		f.composicaoMaxMin(t, v);
 	
