@@ -124,12 +124,10 @@ public class AlgoritmoGenetico {
 	            			filho2.getGenes().add(i,pai.getGenes().get(i));
 	            		}
 	            	}
-
 	            	filhos.add(filho1);
 	            	filhos.add(filho2);
 	            }
-	            cont++; //verificar se o cont deve ser incrementado somente
-	            		//quando cruzar ou não
+	            cont++; 
 	        }
 	        return filhos;
 
@@ -145,18 +143,18 @@ public class AlgoritmoGenetico {
 
 	        ArrayList<Cromossomo> cromossomosSelecionados = new ArrayList<Cromossomo>();
 	        double sum = 0;
+	        double sumParcial = 0;
 	        int cont = 0;
 
 	        for (int i = 0; i < populacao.getTamanhoPopulacao(); i++) {
-	            sum += populacao.getCromossomo(i).getValorCromossomo();
+	            sum += populacao.getCromossomo(i).getFitness() + 1;
 	        }
 
 	        while (cont < qtdSele) {
-	            double numAleatorio = rand.nextDouble();
-
+	            int numAleatorio = rand.nextInt( (int)sum);
 	            for (int i = 0; i < populacao.getTamanhoPopulacao(); i++) {
-	                //sum += populacao.getCromossomo(i).getFitness();
-	                if (sum >= numAleatorio) {
+	                sumParcial += populacao.getCromossomo(i).getFitness() + 1;
+	                if (sumParcial >= numAleatorio) {
 	                    cromossomosSelecionados.add(populacao.getCromossomo(i));
 	                    break;
 	                }
