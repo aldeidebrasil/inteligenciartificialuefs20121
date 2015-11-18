@@ -1,0 +1,1 @@
+Armazenar códigos das atividades práticas da disciplina de Inteligencia Artificial não-simbólica no período 2012.1 da Universidade Estadual de Feira de Santana
